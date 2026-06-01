@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerAI — Your AI-Powered Career Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:           #060612;
+  --bg-2:         #0D0D1F;
+  --surface:      #12122A;
+  --surface-2:    #1A1A35;
+  --surface-3:    #20203F;
+  --border:       rgba(255,255,255,0.07);
+  --border-2:     rgba(255,255,255,0.12);
+  --text:         #F0F0FF;
+  --text-2:       #8888B8;
+  --text-3:       #44447A;
+  --accent:       #6C63FF;
+  --accent-2:     #FF6B6B;
+  --accent-3:     #43E97B;
+  --accent-4:     #FFD93D;
+  --radius:       16px;
+  --radius-sm:    10px;
+  --transition:   0.2s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+h1,h2,h3{font-family:'Syne',sans-serif;letter-spacing:-0.025em;}
+h1{font-size:clamp(2rem,5vw,3.6rem);font-weight:800;line-height:1.05;}
+h2{font-size:clamp(1.3rem,2.8vw,1.9rem);font-weight:700;}
+h3{font-size:1rem;font-weight:700;}
+p{color:var(--text-2);}
+.container{max-width:1100px;margin:0 auto;padding:0 1.5rem;}
+
+/* orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(108,99,255,0.13),transparent 70%);top:-200px;left:-100px;}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(255,107,107,0.08),transparent 70%);bottom:-100px;right:-100px;}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,6,18,0.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 1.5rem;
+}
+.nav-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;height:62px;
+}
+.nav-logo{display:flex;align-items:center;gap:0.6rem;font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem;}
+.nav-logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#A78BFA);display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+.nav-logo-text{background:linear-gradient(90deg,#fff,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-right{display:flex;align-items:center;gap:1.2rem;}
+.nav-link{font-size:0.83rem;color:var(--text-2);transition:color var(--transition);}
+.nav-link:hover{color:var(--text);}
+.btn-nav{
+  background:linear-gradient(135deg,var(--accent),#A78BFA);
+  color:#fff;padding:0.45rem 1.15rem;border-radius:100px;
+  font-size:0.8rem;font-weight:600;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:opacity var(--transition),transform var(--transition);
+}
+.btn-nav:hover{opacity:0.9;transform:translateY(-1px);}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;padding:5.5rem 0 4rem;text-align:center;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.28);
+  border-radius:100px;padding:0.32rem 0.95rem;
+  font-size:0.73rem;font-weight:600;color:#A78BFA;margin-bottom:1.6rem;
+}
+.hero-badge::before{content:'';width:6px;height:6px;background:#A78BFA;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.5)}}
+.hero h1{margin-bottom:1rem;max-width:760px;margin-left:auto;margin-right:auto;}
+.grad{background:linear-gradient(90deg,var(--accent),#A78BFA,var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.hero-sub{font-size:1rem;color:var(--text-2);max-width:500px;margin:0 auto 2.5rem;line-height:1.75;}
+
+.hero-search{max-width:500px;margin:0 auto 3rem;position:relative;}
+.hero-search input{
+  width:100%;padding:0.95rem 1.1rem 0.95rem 2.9rem;
+  background:var(--surface);border:1px solid var(--border-2,rgba(255,255,255,0.12));
+  border-radius:100px;color:var(--text);
+  font-family:'Inter',sans-serif;font-size:0.92rem;outline:none;
+  transition:border-color var(--transition),box-shadow var(--transition);
+}
+.hero-search input::placeholder{color:var(--text-3);}
+.hero-search input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(108,99,255,0.13);}
+.search-icon{position:absolute;left:1.05rem;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:0.88rem;}
+.search-go{
+  position:absolute;right:5px;top:50%;transform:translateY(-50%);
+  background:linear-gradient(135deg,var(--accent),#A78BFA);
+  border:none;border-radius:100px;padding:0.52rem 1rem;
+  color:#fff;font-size:0.8rem;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:opacity var(--transition);
+}
+.search-go:hover{opacity:0.9;}
+
+.hero-stats{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;padding-top:2.2rem;border-top:1px solid var(--border);max-width:480px;margin:0 auto;}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;background:linear-gradient(90deg,#fff,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.stat-label{font-size:0.7rem;color:var(--text-3);margin-top:0.2rem;font-weight:500;}
+
+/* ── TOOLS SECTION ── */
+.tools-section{position:relative;z-index:1;padding:3rem 0 5rem;}
+.section-header{text-align:center;margin-bottom:2.5rem;}
+.section-label{font-size:0.67rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:0.65rem;}
+
+/* Tab switcher */
+.tools-top-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:24px;
+  flex-wrap:wrap;
+}
+.tool-search-wrap{
+  display:flex;
+  justify-content:flex-end;
+  margin:8px 0 12px;
+}    
+
+.tool-search-box{
+  position:relative;
+  top:10px;
+  width:420px;
+  max-width:100%;
+}
+
+.tool-search-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--text-3);
+  font-size:14px;
+  pointer-events:none;
+}
+
+#tool-search{
+  width:100%;
+  padding:12px 14px 12px 40px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  font-size:14px;
+  outline:none;
+  transition:all 0.2s ease;
+}
+
+#tool-search:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px rgba(108,99,255,0.12);
+}
+.tab-switcher{display:flex;justify-content:center;margin-bottom:2rem;}
+.tab-switcher-inner{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:5px;gap:3px;}
+.tab-btn{
+  display:flex;align-items:center;gap:0.45rem;
+  padding:0.55rem 1.3rem;border-radius:100px;
+  font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;
+  color:var(--text-2);background:transparent;border:none;cursor:pointer;
+  transition:all var(--transition);white-space:nowrap;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{background:linear-gradient(135deg,var(--accent),#A78BFA);color:#fff;box-shadow:0 4px 16px rgba(108,99,255,0.3);}
+
+/* ── SPLIT PANEL ── */
+.split-panel{
+  display:grid;grid-template-columns:280px 1fr;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;min-height:480px;
+}
+
+/* LEFT LIST */
+.split-left{
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  background:var(--bg-2);
+}
+.split-left-header{
+  padding:1.1rem 1.2rem 0.85rem;
+  border-bottom:1px solid var(--border);
+}
+.split-left-header p{font-size:0.67rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-3);}
+.tool-list{display:flex;flex-direction:column;padding:0.6rem;}
+.tool-list-item{
+  display:flex;align-items:center;gap:0.75rem;
+  padding:0.75rem 0.85rem;border-radius:10px;
+  cursor:pointer;transition:background var(--transition);
+  position:relative;
+}
+.tool-list-item:hover{background:var(--surface);}
+.tool-list-item.selected{background:var(--surface-2);}
+.tool-list-item.selected::before{
+  content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;background:linear-gradient(180deg,var(--accent),#A78BFA);
+  border-radius:0 3px 3px 0;
+}
+.tli-icon{
+  width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.tli-info{flex:1;min-width:0;}
+.tli-name{font-size:0.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tli-cat{font-size:0.68rem;color:var(--text-3);margin-top:0.08rem;}
+.tli-badge{
+  font-size:0.58rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;padding:0.15rem 0.45rem;border-radius:100px;
+  flex-shrink:0;
+}
+.badge-live{background:rgba(67,233,123,0.12);color:var(--accent-3);border:1px solid rgba(67,233,123,0.2);}
+.badge-soon{background:rgba(255,217,61,0.1);color:var(--accent-4);border:1px solid rgba(255,217,61,0.18);}
+.badge-beta{background:rgba(108,99,255,0.15);color:#A78BFA;border:1px solid rgba(108,99,255,0.25);}
+
+/* RIGHT DETAIL */
+.split-right{display:flex;flex-direction:column;position:relative;}
+.detail-pane{
+  flex:1;padding:2.2rem 2.4rem;
+  display:flex;flex-direction:column;gap:1.4rem;
+  animation:fadeIn 0.22s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.detail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.detail-icon-wrap{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;}
+.detail-badges{display:flex;flex-wrap:wrap;gap:0.4rem;justify-content:flex-end;}
+.detail-badge{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.22rem 0.65rem;border-radius:100px;}
+.detail-cat-badge{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border);}
+.detail-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--text);}
+.detail-desc{font-size:0.95rem;color:var(--text-2);line-height:1.75;max-width:560px;}
+
+.detail-meta{display:flex;gap:1rem;flex-wrap:wrap;}
+.meta-chip{
+  display:flex;align-items:center;gap:0.4rem;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:100px;padding:0.3rem 0.8rem;
+  font-size:0.75rem;color:var(--text-2);font-weight:500;
+}
+
+.detail-actions{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:auto;padding-top:0.5rem;}
+.btn-try{
+  background:linear-gradient(135deg,var(--accent),#A78BFA);
+  color:#fff;border:none;border-radius:100px;
+  padding:0.7rem 1.8rem;font-family:'Inter',sans-serif;
+  font-size:0.88rem;font-weight:600;cursor:pointer;
+  transition:opacity var(--transition),transform var(--transition);
+}
+.btn-try:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-embed-toggle{
+  background:var(--surface-2);color:var(--text-2);
+  border:1px solid var(--border);border-radius:100px;
+  padding:0.7rem 1.4rem;font-family:'Inter',sans-serif;
+  font-size:0.88rem;font-weight:500;cursor:pointer;
+  transition:all var(--transition);
+}
+.btn-embed-toggle:hover{border-color:var(--accent);color:var(--text);}
+.btn-soon-big{
+  background:var(--surface-2);color:var(--text-3);
+  border:1px solid var(--border);border-radius:100px;
+  padding:0.7rem 1.8rem;font-family:'Inter',sans-serif;
+  font-size:0.88rem;font-weight:600;cursor:not-allowed;
+}
+
+/* Embed area inside right panel */
+.embed-area{
+  border-top:1px solid var(--border);
+  display:none;flex-direction:column;
+}
+.embed-area.open{display:flex;}
+.embed-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.65rem 1.4rem;background:var(--surface-2);
+}
+.embed-bar-left{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;font-weight:600;}
+.embed-bar-right{display:flex;align-items:center;gap:0.75rem;}
+.embed-ext{font-size:0.75rem;color:var(--text-2);}
+.embed-ext:hover{color:var(--text);}
+.embed-close-btn{
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  color:var(--text-2);font-size:0.78rem;padding:0.22rem 0.6rem;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:background var(--transition);
+}
+.embed-close-btn:hover{background:var(--border);}
+.embed-area iframe{width:100%;height:560px;border:none;display:block;}
+
+/* Empty state */
+.empty-state{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0.75rem;color:var(--text-3);padding:3rem;text-align:center;
+}
+.empty-state .es-icon{font-size:2.5rem;opacity:0.4;}
+.empty-state p{font-size:0.88rem;}
+
+/* ── HOW IT WORKS ── */
+.how-section{position:relative;z-index:1;padding:4.5rem 0;}
+.how-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;margin-top:2.2rem;}
+.how-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.6rem 1.4rem;text-align:center;
+  transition:border-color var(--transition),transform var(--transition);
+}
+.how-card:hover{border-color:rgba(108,99,255,0.3);transform:translateY(-2px);}
+.how-num{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),#A78BFA);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:0.85rem;
+  margin:0 auto 0.85rem;
+}
+.how-card h3{font-size:0.92rem;margin-bottom:0.4rem;}
+.how-card p{font-size:0.8rem;}
+
+/* ── CTA ── */
+.cta-section{position:relative;z-index:1;padding:3.5rem 0 5.5rem;}
+.cta-inner{
+  background:linear-gradient(135deg,rgba(108,99,255,0.13),rgba(167,139,250,0.07));
+  border:1px solid rgba(108,99,255,0.22);border-radius:22px;
+  padding:3.2rem;text-align:center;
+}
+.cta-inner h2{margin-bottom:0.65rem;}
+.cta-inner p{font-size:0.95rem;margin-bottom:1.8rem;}
+.cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#A78BFA);color:#fff;padding:0.75rem 1.8rem;border-radius:100px;font-size:0.88rem;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity var(--transition),transform var(--transition);}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border-2,rgba(255,255,255,0.12));padding:0.75rem 1.8rem;border-radius:100px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:border-color var(--transition);}
+.btn-ghost:hover{border-color:var(--accent);}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:1.8rem 1.5rem;text-align:center;font-size:0.76rem;color:var(--text-3);}
+footer span{color:var(--accent);}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* responsive */
+@media(max-width:700px){
+  .split-panel{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  .split-left{border-right:none;border-bottom:1px solid var(--border);}
+  .tool-list{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:0.5rem;}
+  .tool-list-item{flex-direction:column;align-items:center;text-align:center;min-width:80px;gap:0.35rem;}
+  .tool-list-item.selected::before{display:none;}
+  .tli-cat{display:none;}
+  .nav-right .nav-link{display:none;}
+  .detail-pane{padding:1.4rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+  ✏️  EDIT YOUR CONTENT HERE
+  Tool status:  "live" | "beta" | "soon"
+  Tool mode:    "external" (new tab) | "embed" (iframe in right panel)
+================================================================ -->
+<script>
+const CONFIG = {
+  name:      "CareerAI",
+  by:        "by Harish",
+  tagline:   "Your <span class='grad'>AI-powered</span> career platform",
+  subline:   "Tools to help you discover the right path, prepare smarter, and grow faster.",
+  portfolio: "ADD_PORTFOLIO_LINK_HERE",
+  stats: [
+    { num:"8+",   label:"AI Tools" },
+    { num:"20K+", label:"Community" },
+    { num:"Free", label:"Always" },
+  ],
+  howItWorks: [
+    { num:"01", icon:"🔍", title:"Discover your path",   desc:"Use AI to understand your strengths and find the right direction." },
+    { num:"02", icon:"📋", title:"Build your toolkit",    desc:"Create resumes, prep for interviews, tailor applications." },
+    { num:"03", icon:"📈", title:"Grow with AI",          desc:"Track progress, build skills, stay ahead." },
+    { num:"04", icon:"🚀", title:"Land your goal",        desc:"Put it all together and move toward the career you want." },
+  ],
+  tabs: [
+    {
+      id:"discover", icon:"🔍", label:"Discover",
+      heading:"Find your direction",
+      sub:"Not sure where you're headed? Start here.",
+      tools: [
+        {
+          icon:"🎓", iconBg:"linear-gradient(135deg,#667EEA,#764BA2)",
+          name:"Stream Finder",panelTitle:"I want to choose the right stream after Class 10", category:"Education",
+          description:"Helps Class 10 students choose the right stream — Science, Commerce, or Arts — based on interests, strengths, and future goals. An AI-guided decision tool that removes the guesswork from one of the most important choices a student makes.",
+          chips:["🎯 For students","📚 Education","⚡ 2 min"],
+          status:"live", mode:"embed", link:"https://streamadvisor-harish.netlify.app/",
+        },
+        {
+          icon:"🧭", iconBg:"linear-gradient(135deg,#F093FB,#F5576C)",
+          name:"Career Coach", panelTitle:"I'm not sure what career is right for me", category:"Career",
+          description:"An AI career coach that helps you explore career options, understand your strengths, and map a personalised path forward. Ask it anything about career transitions, salaries, or what skills to build next.",
+          chips:["💼 All levels","🤖 AI Chat","⚡ 5 min"],
+          status:"live", mode:"external", link:"https://chatgpt.com/g/g-6a0fd64da01c8191b49a8911db90366a-career-ai-by-harish",
+        },
+      ],
+    },
+    {
+      id:"prepare", icon:"📋", label:"Prepare",
+      heading:"Prepare like a pro",
+      sub:"Tools to make sure you're ready before the opportunity knocks.",
+      tools: [
+        {
+          icon:"📄", iconBg:"linear-gradient(135deg,#4FACFE,#00F2FE)",
+          name:"Resume Builder", panelTitle:"I need a professional resume, fast", category:"Resume",
+          description:"Answer simple questions and get a professional, ATS-friendly resume auto-generated — exportable as PDF or Word. No design skills needed. No templates to wrestle with. Just your story, formatted perfectly.",
+          chips:["📄 ATS-friendly","⬇️ PDF & Word","⚡ 5 min"],
+          status:"live", mode:"external", link:"https://chatgpt.com/g/g-6a080b44b36081918e6d887a53a6b6a3-ai-resume-builder",
+        },
+        {
+          icon:"✂️", iconBg:"linear-gradient(135deg,#43E97B,#38F9D7)",
+          name:"Resume Tailor",panelTitle:"I want my resume to match this specific job", category:"Resume",
+          description:"Paste a job description and your existing resume — AI rewrites your resume to match the role, highlight the right keywords, and beat ATS filters. One click, perfectly tailored.",
+          chips:["🎯 Job-specific","🤖 AI-powered","⚡ 2 min"],
+          status:"live", mode:"embed", link:"https://resumebuilderbyharish.netlify.app/",
+        },
+        {
+          icon:"💼", iconBg:"linear-gradient(135deg,#FA709A,#FEE140)",
+          name:"Interview Prep",panelTitle:"I have an interview coming up and I'm nervous", category:"Interview",
+          description:"Practice real interview questions across roles and industries. Get instant AI feedback on your answers, learn what interviewers actually look for, and walk in confident on the day.",
+          chips:["🎤 Mock Interview","💬 AI Feedback","⚡ 10 min"],
+          status:"live", mode:"external", link:"https://chatgpt.com/g/g-69db6512aa08819190bad7c88bbc83e5-prepai-interview-coach-by-harish",
+        },
+      ],
+    },
+    {
+      id:"grow", icon:"📈", label:"Grow",
+      heading:"Level up your career",
+      sub:"Skills, strategy, and data to help you grow beyond the job search.",
+      tools: [
+        {
+          icon:"📊", iconBg:"linear-gradient(135deg,#667EEA,#43E97B)",
+          name:"Analytics Coach",panelTitle:"I want to improve my data analytics skills", category:"Skills",
+          description:"Learn data analytics through guided AI coaching, real datasets, and hands-on exercises. From Excel to SQL to dashboards — build skills employers actually pay for.",
+          chips:["📊 Data Skills","🧑‍💻 Hands-on","⚡ Self-paced"],
+          modules:[
+             {name:"Excel",link:"https://chatgpt.com/g/g-69ddf7f9d1888191b3baf43822324bf8-excel-practice-by-harish"},
+              {name:"SQL",link:"#"},
+              {name:"Python",link:"#"}
+          ],
+          status:"live", mode:"external", link:"#",
+        },
+        {
+          icon:"🗺️", iconBg:"linear-gradient(135deg,#F093FB,#667EEA)",
+          name:"PM Roadmap", category:"Product",
+          description:"A personalised roadmap to break into Product Management — curated resources, milestones, portfolio tips, and AI guidance at every step. Go from zero to PM-ready.",
+          chips:["🗺️ PM Career","📍 Step-by-step","⚡ 3 months"],
+          status:"soon", mode:"external", link:"#",
+        },
+        {
+          icon:"🤖", iconBg:"linear-gradient(135deg,#4FACFE,#FA709A)",
+          name:"AI Skills", category:"Skills",
+          description:"Hands-on mini-courses to master prompt engineering, AI tools, and how to use AI to 10x your productivity at work. Practical, short, and immediately usable.",
+          chips:["🤖 AI & Prompts","⚡ 15 min/day","🆓 Free"],
+          status:"soon", mode:"external", link:"#",
+        },
+      ],
+    },
+  ],
+};
+</script>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">⚡</div>
+      <span class="nav-logo-text" id="nav-name"></span>
+      <span style="font-size:0.7rem;color:var(--text-3);font-weight:400;font-family:'Inter',sans-serif;" id="nav-by"></span>
+    </div>
+    <div class="nav-right">
+      <a class="nav-link" href="#tools">Tools</a>
+      <a class="nav-link" href="#how">How it works</a>
+      <a class="nav-link" id="nav-port" target="_blank">Portfolio ↗</a>
+      <button class="btn-nav" id="login-btn" onclick="googleLogin()">
+        Login with Google
+      </button>
+      <button class="btn-nav" id="logout-btn" style="display:none;">
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero reveal">
+  <div class="container">
+    <div class="hero-badge">⚡ Free · AI-Powered · Built for You</div>
+    <h1 id="hero-h1"></h1>
+    <p class="hero-sub" id="hero-sub"></p>
+    <div class="hero-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-inp" placeholder="e.g. How do I prepare for a PM interview?">
+      <button class="search-go" id="search-go">Ask CareerAI →</button>
+    </div>
+    <div id="ai-response" style="
+        margin-top:14px;
+        font-size:14px;
+        color:var(--text-2);
+        text-align:left;
+        display:none;
+        background:var(--surface);
+        border:1px solid var(--border);
+        padding:14px;
+        border-radius:12px;
+        max-height:420px;
+        overflow-y:auto;
+        scroll-behavior:smooth;
+        "></div>
+    <div class="hero-stats" id="hero-stats"></div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools-section" id="tools">
+  <div class="container">
+
+    <div class="tools-top-row reveal">
+
+      <div class="section-header" style="margin-bottom:0;text-align:left;">
+        <p class="section-label">AI Tools</p>
+        <h2>Everything you need, in one place</h2>
+      </div>
+
+      
+
+    </div>
+
+    <div id="tool-search-results" style="display:none;margin-top:16px;"></div>
+
+    <div class="tab-switcher">
+      <div class="tab-switcher-inner" id="tab-switcher"></div>
+    </div>
+    <div class="tool-search-wrap">
+  <div class="tool-search-box">
+    <span class="tool-search-icon">🔍</span>
+    <input type="text" id="tool-search" placeholder="Search tools & resources...">
+  </div>
+</div>
+
+    <div id="tab-panels"></div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <p class="section-label">How it works</p>
+      <h2>Your journey, step by step</h2>
+    </div>
+    <div class="how-grid" id="how-grid"></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <h2>Start building your career today.</h2>
+      <p>Free tools. Real results. No sign-up required.</p>
+      <div class="cta-actions">
+        <button class="btn-primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Explore all tools →</button>
+        <a class="btn-ghost" id="cta-port" target="_blank">See the portfolio ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><span id="footer-txt"></span></footer>
+
+<script>
+(function(){
+  const C = CONFIG;
+
+  // Nav / footer
+  document.getElementById('nav-name').textContent = C.name;
+  document.getElementById('nav-by').textContent   = C.by;
+  document.getElementById('nav-port').href        = C.portfolio;
+  document.getElementById('cta-port').href        = C.portfolio;
+  document.getElementById('footer-txt').innerHTML =
+    `© ${new Date().getFullYear()} <span>${C.name}</span> ${C.by} · Free forever · Built for career growth`;
+
+  // Hero
+  document.getElementById('hero-h1').innerHTML   = C.tagline;
+  document.getElementById('hero-sub').textContent = C.subline;
+  const se = document.getElementById('hero-stats');
+  C.stats.forEach(s => se.innerHTML += `<div><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>`);
+
+  // Search
+  let chatHistory = [];
+  async function doSearch(){
+  const q = document.getElementById('search-inp').value.trim();
+  if(!q) return;
+
+  const responseBox = document.getElementById('ai-response');
+
+  responseBox.style.display = 'block';
+
+responseBox.style.display = 'block';
+const thinkingMsg = document.getElementById('thinking-msg');
+if(thinkingMsg) thinkingMsg.remove();
+responseBox.innerHTML += `
+  <div id="thinking-msg" style="opacity:0.7;margin-bottom:12px;">
+    CareerAI is thinking...
+  </div>
+`;
+chatHistory.push({
+  role: "user",
+  content: q
+});
+const response = await fetch("/api/chat", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "HTTP-Referer": window.location.origin,
+    "X-Title": "CareerAI"
+  },
+  body: JSON.stringify({
+   model: "google/gemma-4-26b-a4b-it",
+   max_tokens: 300,
+    messages: [
+      {
+        role: "system",
+         content: `You are CareerAI, an AI career assistant inside Harish's platform.
+
+          Your job:
+          - Help users with resumes, PM careers, analytics, AI skills, SQL, Excel, Python, interviews and career growth.
+          - Keep responses SHORT and practical.
+          - Max 120 words.
+          - Use bullet points when useful.
+          - If answer needs deep guidance, suggest a relevant tool from the platform.
+          - Sound like a smart mentor, not a generic chatbot.
+          - Never write long essays.`
+          },
+        ...chatHistory,
+      {
+        role: "user",
+        content: q
+      }
+    ]
+  })
+});
+
+const data = await response.json();
+console.log(JSON.stringify(data, null, 2));
+
+const aiReply = data.choices?.[0]?.message?.content || "No response received.";
+chatHistory.push({
+  role: "assistant",
+  content: aiReply
+});
+responseBox.style.display = 'block';
+
+responseBox.innerHTML += `
+  <div style="margin-bottom:16px;">
+    <div style="font-size:12px;color:#888;margin-bottom:6px;">You</div>
+    <div style="background:rgba(255,255,255,0.04);padding:12px;border-radius:12px;margin-bottom:10px;">
+      ${q}
+    </div>
+
+    <div style="font-size:12px;color:#888;margin-bottom:6px;">CareerAI</div>
+    <div style="background:rgba(108,99,255,0.08);padding:12px;border-radius:12px;">
+       ${aiReply
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\* /g, '<br>• ')
+        .replace(/Resume Builder/g, '<a href="https://chatgpt.com/g/g-6a080b44b36081918e6d887a53a6b6a3-ai-resume-builder" target="_blank" style="color:#8b5cf6;text-decoration:none;font-weight:600;">Resume Builder</a>')
+        .replace(/Interview Prep/g, '<a href="https://chatgpt.com/g/g-69db6512aa08819190bad7c88bbc83e5-prepai-interview-coach-by-harish" target="_blank" style="color:#8b5cf6;text-decoration:none;font-weight:600;">Interview Prep</a>')
+        .replace(/Stream Finder/g, '<a href="https://streamadvisor-harish.netlify.app/" target="_blank" style="color:#8b5cf6;text-decoration:none;font-weight:600;">Stream Finder</a>')
+        .replace(/\n/g, '<br>')
+      }
+    </div>
+  </div>
+`;
+setTimeout(() => {
+  responseBox.scrollTop = responseBox.scrollHeight;
+}, 100);
+}
+  document.getElementById('search-go').addEventListener('click', doSearch);
+  document.getElementById('search-inp').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+      const toolSearch = document.getElementById('tool-search');
+    const toolSearchResults = document.getElementById('tool-search-results');
+
+    toolSearch.addEventListener('input', () => {
+
+      const q = toolSearch.value.trim().toLowerCase();
+
+      if(!q){
+        document.querySelectorAll('.tool-list-item').forEach(el=>{
+          el.style.display = 'flex';
+        });
+        toolSearchResults.style.display = 'none';
+        document.getElementById('tab-panels').style.display = '';
+        return;
+      }
+
+      toolSearchResults.style.display = 'none';
+document.getElementById('tab-panels').style.display = '';
+
+
+C.tabs.forEach(tab => {
+  tab.tools.forEach((tool, idx) => {
+
+    const text = (
+      tool.name + ' ' +
+      tool.description + ' ' +
+      tool.category
+    ).toLowerCase();
+
+    if(text.includes(q)){
+
+      switchTab(tab.id);
+
+        setTimeout(() => {
+
+          const items = document.querySelectorAll(`#panel-${tab.id} .tool-list-item`);
+
+          items.forEach((el,i)=>{
+
+            const itemText = el.innerText.toLowerCase();
+
+            el.style.display = itemText.includes(q)
+              ? 'flex'
+              : 'none';
+
+          });
+
+          tab._renderDetail(idx);
+
+        }, 100);
+    }
+
+  });
+});
+
+const visibleItems = [...document.querySelectorAll('.tool-list-item')]
+  .filter(el => el.style.display !== 'none');
+
+if(visibleItems.length === 0){
+  toolSearchResults.style.display = 'block';
+  toolSearchResults.innerHTML = `
+    <p style="opacity:0.7;">No matching tools found.</p>
+  `;
+}
+    });
+  // Build tabs
+  const switcher = document.getElementById('tab-switcher');
+  const panels   = document.getElementById('tab-panels');
+  let activeTab  = C.tabs[0].id;
+
+  C.tabs.forEach((tab, ti) => {
+    // Button
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (ti===0?' active':'');
+    btn.dataset.tab = tab.id;
+    btn.innerHTML = `<span>${tab.icon}</span>${tab.label}`;
+    btn.addEventListener('click', ()=> switchTab(tab.id));
+    switcher.appendChild(btn);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'tab-panel reveal' + (ti===0?' active':'');
+    panel.id = 'panel-' + tab.id;
+    panel.style.display = ti===0 ? '' : 'none';
+
+    // Panel header
+    const ph = document.createElement('div');
+    ph.style.cssText = 'margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;';
+    ph.innerHTML = `
+  <div>
+    <h2 style="margin-bottom:0.25rem;">${tab.heading}</h2>
+    <p style="font-size:0.88rem;">${tab.sub}</p>
+  </div>
+`;
+    panel.appendChild(ph);
+
+    // Split panel
+    const split = document.createElement('div');
+    split.className = 'split-panel';
+
+    // Left list
+    const left = document.createElement('div');
+    left.className = 'split-left';
+    left.innerHTML = `<div class="split-left-header"><p>Tools in this section</p></div>`;
+    const list = document.createElement('div');
+    list.className = 'tool-list';
+
+    // Right detail
+    const right = document.createElement('div');
+    right.className = 'split-right';
+
+    // Track selected per tab
+    let selectedIdx = 0;
+
+    function renderDetail(idx){
+      selectedIdx = idx;
+      // update list selection
+      list.querySelectorAll('.tool-list-item').forEach((el,i)=>{
+        el.classList.toggle('selected', i===idx);
+      });
+      const tool = tab.tools[idx];
+      right.innerHTML = '';
+
+      const isLive = tool.status==='live'||tool.status==='beta';
+      const statusBadge = tool.status==='live'  ? `<span class="detail-badge badge-live">● Live</span>`
+                        : tool.status==='beta'  ? `<span class="detail-badge badge-beta">Beta</span>`
+                        :                         `<span class="detail-badge badge-soon">Coming Soon</span>`;
+
+      const pane = document.createElement('div');
+      pane.className = 'detail-pane';
+      pane.innerHTML = `
+        <div class="detail-top">
+          <div class="detail-icon-wrap" style="background:${tool.iconBg}">${tool.icon}</div>
+          <div class="detail-badges">
+            ${statusBadge}
+            <span class="detail-badge detail-cat-badge">${tool.category}</span>
+          </div>
+        </div>
+        <div>
+          <div class="detail-title">${tool.panelTitle || tool.name}</div>
+        </div>
+        <p class="detail-desc">${tool.description}</p>
+        <div class="detail-meta">
+            ${(tool.chips||[]).map(c=>`<span class="meta-chip">${c}</span>`).join('')}
+        </div>
+        <div class="detail-actions">
+          ${isLive
+            ? `
+              ${tool.modules?.length ? '' : `<button class="btn-try" id="try-${tab.id}-${idx}">Try Now →</button>`}
+
+              ${(tool.modules||[]).map(m=>`
+                <button 
+                  class="btn-try module-btn" 
+                  onclick="window.open('${m.link}','_blank')">
+                  ${m.name}
+                </button>
+              `).join('')}
+
+              ${tool.mode==='embed' ? `<button class="btn-embed-toggle" id="embtog-${tab.id}-${idx}">⤢ Open here</button>` : ''}
+            `
+            : `<div class="btn-soon-big">Coming Soon</div>`
+          }
+        </div>
+      `;
+      right.appendChild(pane);
+
+      // Embed area
+      if(tool.mode==='embed' && isLive){
+        const ea = document.createElement('div');
+        ea.className = 'embed-area';
+        ea.id = `ea-${tab.id}-${idx}`;
+        ea.innerHTML = `
+          <div class="embed-bar">
+            <div class="embed-bar-left">${tool.icon} <span>${tool.name}</span></div>
+            <div class="embed-bar-right">
+              <a class="embed-ext" href="${tool.link}" target="_blank">Open in new tab ↗</a>
+              <button class="embed-close-btn" data-ea="ea-${tab.id}-${idx}">✕ Close</button>
+            </div>
+          </div>
+          <iframe src="${tool.link}" title="${tool.name}" allowfullscreen></iframe>
+        `;
+        right.appendChild(ea);
+      }
+
+      // Events on right panel
+      const tryBtn = document.getElementById(`try-${tab.id}-${idx}`);
+      if(tryBtn){
+        tryBtn.addEventListener('click', async ()=>{
+
+        if(!window.isLoggedIn){
+
+          try{
+
+            const provider = new window.GoogleAuthProvider();
+
+            const result = await window.signInWithPopup(window.auth, provider);
+
+              window.isLoggedIn = true;
+
+              const user = result.user;
+
+              document.getElementById('login-btn').innerHTML = `
+                Hi ${user.displayName.split(' ')[0]} 👋
+              `;
+              document.getElementById('logout-btn').style.display = 'inline-flex';
+
+              document.getElementById('logout-btn').onclick = logoutUser;
+              alert("Login successful!");
+
+              if(tool.mode==='embed'){
+
+                const ea = document.getElementById(`ea-${tab.id}-${idx}`);
+
+                if(ea){
+                  ea.classList.toggle('open');
+
+                  ea.scrollIntoView({
+                    behavior:'smooth',
+                    block:'nearest'
+                  });
+                }
+
+              } else {
+
+                window.open(tool.link,'_blank');
+
+              }
+
+              return;
+
+            document.querySelector('.nav-right').innerHTML = `
+              <div style="
+                display:flex;
+                align-items:center;
+                gap:10px;
+                color:white;
+                font-size:14px;
+                font-weight:600;
+              ">
+                <img 
+                  src="${user.photoURL}" 
+                  style="
+                    width:34px;
+                    height:34px;
+                    border-radius:50%;
+                  "
+                >
+                <span>Hi, ${user.displayName.split(' ')[0]} 👋</span>
+              </div>
+            `;
+            document.getElementById('login-btn').innerHTML = `
+              Hi ${window.auth.currentUser.displayName.split(' ')[0]} 👋
+            `;
+            alert("Login successful!");
+
+          } catch(err){
+
+            console.error(err);
+            return;
+
+          }
+
+        }
+
+        if(tool.mode==='embed'){
+
+          const ea = document.getElementById(`ea-${tab.id}-${idx}`);
+
+          if(ea){
+            ea.classList.toggle('open');
+            ea.scrollIntoView({
+              behavior:'smooth',
+              block:'nearest'
+            });
+          }
+
+        } else {
+
+          window.open(tool.link,'_blank');
+
+        }
+
+      });
+      }
+      const togBtn = document.getElementById(`embtog-${tab.id}-${idx}`);
+      if(togBtn){
+        togBtn.addEventListener('click', ()=>{
+          const ea = document.getElementById(`ea-${tab.id}-${idx}`);
+          if(ea){ ea.classList.toggle('open'); ea.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+        });
+      }
+      right.addEventListener('click', e=>{
+        const cb = e.target.closest('.embed-close-btn');
+        if(cb){ const ea=document.getElementById(cb.dataset.ea); if(ea) ea.classList.remove('open'); }
+      });
+    }
+
+    // Build list items
+    tab.tools.forEach((tool,i)=>{
+      const item = document.createElement('div');
+      item.className = 'tool-list-item' + (i===0?' selected':'');
+      const badgeHtml = tool.status==='live' ? `<span class="tli-badge badge-live">Live</span>`
+                      : tool.status==='beta' ? `<span class="tli-badge badge-beta">Beta</span>`
+                      :                        `<span class="tli-badge badge-soon">Soon</span>`;
+      item.innerHTML = `
+        <div class="tli-icon" style="background:${tool.iconBg}">${tool.icon}</div>
+        <div class="tli-info">
+          <div class="tli-name">${tool.name}</div>
+          <div class="tli-cat">${tool.category}</div>
+        </div>
+        ${badgeHtml}
+      `;
+      item.addEventListener('click', ()=> renderDetail(i));
+      list.appendChild(item);
+    });
+
+    left.appendChild(list);
+    split.appendChild(left);
+    split.appendChild(right);
+    panel.appendChild(split);
+    panels.appendChild(panel);
+
+    // render first tool by default
+    if(ti===0) renderDetail(0);
+
+    // store renderDetail per tab
+    tab._renderDetail = renderDetail;
+  });
+
+  function switchTab(id){
+    activeTab = id;
+    document.querySelectorAll('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===id));
+    C.tabs.forEach(tab=>{
+      const p = document.getElementById('panel-'+tab.id);
+      const isActive = tab.id===id;
+      p.style.display = isActive ? '' : 'none';
+      p.classList.toggle('active', isActive);
+      if(isActive && tab._renderDetail) tab._renderDetail(0);
+    });
+  }
+
+  // How it works
+  const hg = document.getElementById('how-grid');
+  C.howItWorks.forEach(h=>{
+    hg.innerHTML += `<div class="how-card reveal"><div class="how-num">${h.num}</div><div style="font-size:1.7rem;margin-bottom:0.6rem;">${h.icon}</div><h3>${h.title}</h3><p>${h.desc}</p></div>`;
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  },{threshold:0.06});
+  document.querySelectorAll('.reveal').forEach(el=> obs.observe(el));
+})();
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBU2Z2gULJGtcEIOhZRTKht5lKrCMuDUrE",
+  authDomain: "career-ai-e0d5c.firebaseapp.com",
+  projectId: "career-ai-e0d5c",
+  storageBucket: "career-ai-e0d5c.firebasestorage.app",
+  messagingSenderId: "167803545527",
+  appId: "1:167803545527:web:7bef9b47c4394907922a32",
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+window.isLoggedIn = false;
+window.auth = auth;
+window.GoogleAuthProvider = GoogleAuthProvider;
+window.signInWithPopup = signInWithPopup;
+window.googleLogin = async function(){
+
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({
+  prompt: 'select_account'
+});
+
+  try{
+
+    const result = await signInWithPopup(auth, provider);
+    window.isLoggedIn = true;
+
+    const user = result.user;
+    document.querySelector('.nav-right').innerHTML = `
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        color:white;
+        font-size:14px;
+        font-weight:600;
+      ">
+        <img 
+          src="${user.photoURL}" 
+          style="
+            width:34px;
+            height:34px;
+            border-radius:50%;
+          "
+        >
+        <span>Hi, ${user.displayName.split(' ')[0]} 👋</span>
+      </div>
+    `;
+
+    document.querySelector('.nav-right').innerHTML = `
+  <div style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:white;
+    font-size:14px;
+    font-weight:600;
+  ">
+    <img 
+      src="${user.photoURL}" 
+      style="
+        width:34px;
+        height:34px;
+        border-radius:50%;
+      "
+    >
+    <span>Hi, ${user.displayName.split(' ')[0]} 👋</span>
+  </div>
+`;
+
+    console.log(user);
+
+  } catch(error){
+
+    console.error(error);
+
+  }
+
+}
+window.logoutUser = async function(){
+
+  await signOut(auth);
+
+  window.isLoggedIn = false;
+
+  document.getElementById('login-btn').innerHTML = `
+    Login with Google
+  `;
+
+  document.getElementById('logout-btn').style.display = 'none';
+
+}
+
+</script>
+</body>
+</html>
