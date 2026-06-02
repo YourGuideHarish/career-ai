@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="transformSheetToTabs.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CareerAI — Your AI-Powered Career Platform</title>
@@ -381,90 +383,7 @@ const CONFIG = {
     { num:"03", icon:"📈", title:"Grow with AI",          desc:"Track progress, build skills, stay ahead." },
     { num:"04", icon:"🚀", title:"Land your goal",        desc:"Put it all together and move toward the career you want." },
   ],
-  tabs: [
-    {
-      id:"discover", icon:"🔍", label:"Discover",
-      heading:"Find your direction",
-      sub:"Not sure where you're headed? Start here.",
-      tools: [
-        {
-          icon:"🎓", iconBg:"linear-gradient(135deg,#667EEA,#764BA2)",
-          name:"Stream Finder",panelTitle:"I want to choose the right stream after Class 10", category:"Education",
-          description:"Helps Class 10 students choose the right stream — Science, Commerce, or Arts — based on interests, strengths, and future goals. An AI-guided decision tool that removes the guesswork from one of the most important choices a student makes.",
-          chips:["🎯 For students","📚 Education","⚡ 2 min"],
-          status:"live", mode:"embed", link:"https://streamadvisor-harish.netlify.app/",
-        },
-        {
-          icon:"🧭", iconBg:"linear-gradient(135deg,#F093FB,#F5576C)",
-          name:"Career Coach", panelTitle:"I'm not sure what career is right for me", category:"Career",
-          description:"An AI career coach that helps you explore career options, understand your strengths, and map a personalised path forward. Ask it anything about career transitions, salaries, or what skills to build next.",
-          chips:["💼 All levels","🤖 AI Chat","⚡ 5 min"],
-          status:"live", mode:"external", link:"https://chatgpt.com/g/g-6a0fd64da01c8191b49a8911db90366a-career-ai-by-harish",
-        },
-      ],
-    },
-    {
-      id:"prepare", icon:"📋", label:"Prepare",
-      heading:"Prepare like a pro",
-      sub:"Tools to make sure you're ready before the opportunity knocks.",
-      tools: [
-        {
-          icon:"📄", iconBg:"linear-gradient(135deg,#4FACFE,#00F2FE)",
-          name:"Resume Builder", panelTitle:"I need a professional resume, fast", category:"Resume",
-          description:"Answer simple questions and get a professional, ATS-friendly resume auto-generated — exportable as PDF or Word. No design skills needed. No templates to wrestle with. Just your story, formatted perfectly.",
-          chips:["📄 ATS-friendly","⬇️ PDF & Word","⚡ 5 min"],
-          status:"live", mode:"external", link:"https://chatgpt.com/g/g-6a080b44b36081918e6d887a53a6b6a3-ai-resume-builder",
-        },
-        {
-          icon:"✂️", iconBg:"linear-gradient(135deg,#43E97B,#38F9D7)",
-          name:"Resume Tailor",panelTitle:"I want my resume to match this specific job", category:"Resume",
-          description:"Paste a job description and your existing resume — AI rewrites your resume to match the role, highlight the right keywords, and beat ATS filters. One click, perfectly tailored.",
-          chips:["🎯 Job-specific","🤖 AI-powered","⚡ 2 min"],
-          status:"live", mode:"embed", link:"https://resumebuilderbyharish.netlify.app/",
-        },
-        {
-          icon:"💼", iconBg:"linear-gradient(135deg,#FA709A,#FEE140)",
-          name:"Interview Prep",panelTitle:"I have an interview coming up and I'm nervous", category:"Interview",
-          description:"Practice real interview questions across roles and industries. Get instant AI feedback on your answers, learn what interviewers actually look for, and walk in confident on the day.",
-          chips:["🎤 Mock Interview","💬 AI Feedback","⚡ 10 min"],
-          status:"live", mode:"external", link:"https://chatgpt.com/g/g-69db6512aa08819190bad7c88bbc83e5-prepai-interview-coach-by-harish",
-        },
-      ],
-    },
-    {
-      id:"grow", icon:"📈", label:"Grow",
-      heading:"Level up your career",
-      sub:"Skills, strategy, and data to help you grow beyond the job search.",
-      tools: [
-        {
-          icon:"📊", iconBg:"linear-gradient(135deg,#667EEA,#43E97B)",
-          name:"Analytics Coach",panelTitle:"I want to improve my data analytics skills", category:"Skills",
-          description:"Learn data analytics through guided AI coaching, real datasets, and hands-on exercises. From Excel to SQL to dashboards — build skills employers actually pay for.",
-          chips:["📊 Data Skills","🧑‍💻 Hands-on","⚡ Self-paced"],
-          modules:[
-             {name:"Excel",link:"https://chatgpt.com/g/g-69ddf7f9d1888191b3baf43822324bf8-excel-practice-by-harish"},
-              {name:"SQL",link:"#"},
-              {name:"Python",link:"#"}
-          ],
-          status:"live", mode:"external", link:"#",
-        },
-        {
-          icon:"🗺️", iconBg:"linear-gradient(135deg,#F093FB,#667EEA)",
-          name:"PM Roadmap", category:"Product",
-          description:"A personalised roadmap to break into Product Management — curated resources, milestones, portfolio tips, and AI guidance at every step. Go from zero to PM-ready.",
-          chips:["🗺️ PM Career","📍 Step-by-step","⚡ 3 months"],
-          status:"soon", mode:"external", link:"#",
-        },
-        {
-          icon:"🤖", iconBg:"linear-gradient(135deg,#4FACFE,#FA709A)",
-          name:"AI Skills", category:"Skills",
-          description:"Hands-on mini-courses to master prompt engineering, AI tools, and how to use AI to 10x your productivity at work. Practical, short, and immediately usable.",
-          chips:["🤖 AI & Prompts","⚡ 15 min/day","🆓 Free"],
-          status:"soon", mode:"external", link:"#",
-        },
-      ],
-    },
-  ],
+  tabs: [],
 };
 </script>
 
@@ -580,10 +499,40 @@ const CONFIG = {
 </section>
 
 <footer><span id="footer-txt"></span></footer>
+<script>
+
+async function testSheetConnection() {
+
+const response = await fetch(
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vROmN0beh5YCCEEywnT0x469m9IIdemfJumu2QSuFmyehA6fF0_B7PBd01Tj0dIxO1crNKwrWY7BHqS/pub?output=csv"
+);
+
+const data = await response.text();
+
+const parsed = Papa.parse(data, {
+header: true
+});
+
+const tabs = transformSheetToTabs(parsed.data);
+
+CONFIG.tabs = tabs;
+
+console.log(CONFIG.tabs);
+
+initApp();
+
+}
+
+testSheetConnection();
+
+
+</script>
 
 <script>
-(function(){
-  const C = CONFIG;
+async function initApp(){
+
+const C = CONFIG;
+
 
   // Nav / footer
   document.getElementById('nav-name').textContent = C.name;
@@ -597,6 +546,8 @@ const CONFIG = {
   document.getElementById('hero-h1').innerHTML   = C.tagline;
   document.getElementById('hero-sub').textContent = C.subline;
   const se = document.getElementById('hero-stats');
+  se.innerHTML = '';
+
   C.stats.forEach(s => se.innerHTML += `<div><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>`);
 
   // Search
@@ -758,6 +709,9 @@ if(visibleItems.length === 0){
   // Build tabs
   const switcher = document.getElementById('tab-switcher');
   const panels   = document.getElementById('tab-panels');
+  switcher.innerHTML = '';
+  panels.innerHTML = '';
+
   let activeTab  = C.tabs[0].id;
 
   C.tabs.forEach((tab, ti) => {
@@ -838,7 +792,21 @@ if(visibleItems.length === 0){
         <div class="detail-actions">
           ${isLive
             ? `
-              ${tool.modules?.length ? '' : `<button class="btn-try" id="try-${tab.id}-${idx}">Try Now →</button>`}
+              ${
+                tool.resources?.length > 1
+                ? tool.resources.map((r,ri)=>`         <button
+                  class="btn-try"
+                  onclick="window.open('${r.link}','_blank')"
+                  id="resource-${tab.id}-${idx}-${ri}"
+                  >
+
+                  ${r.label} </button>
+
+                      `).join('')
+                : `<button class="btn-try" id="try-${tab.id}-${idx}">
+                        ${tool.resources?.[0]?.label || 'Try Now'} →       </button>`
+                }
+
 
               ${(tool.modules||[]).map(m=>`
                 <button 
@@ -848,7 +816,6 @@ if(visibleItems.length === 0){
                 </button>
               `).join('')}
 
-              ${tool.mode==='embed' ? `<button class="btn-embed-toggle" id="embtog-${tab.id}-${idx}">⤢ Open here</button>` : ''}
             `
             : `<div class="btn-soon-big">Coming Soon</div>`
           }
@@ -876,49 +843,68 @@ if(visibleItems.length === 0){
 
       // Events on right panel
       const tryBtn = document.getElementById(`try-${tab.id}-${idx}`);
+
+tool.resources?.forEach((r,ri)=>{
+
+const resourceBtn = document.getElementById(
+`resource-${tab.id}-${idx}-${ri}`
+);
+
+if(resourceBtn){
+
+resourceBtn.onclick = async () => {
+
+  if(!window.isLoggedIn){
+
+    openAuthModal();
+    return;
+
+  }
+
+  window.open(r.link, '_blank');
+
+};
+
+}
+
+});
+
+
       if(tryBtn){
         tryBtn.addEventListener('click', async ()=>{
 
         if(!window.isLoggedIn){
 
           try{
+            await window.googleLogin();
 
-            const provider = new window.GoogleAuthProvider();
-
-            const result = await window.signInWithPopup(window.auth, provider);
-
-              window.isLoggedIn = true;
-
-              const user = result.user;
-
-              document.getElementById('login-btn').innerHTML = `
-                Hi ${user.displayName.split(' ')[0]} 👋
-              `;
               document.getElementById('logout-btn').style.display = 'inline-flex';
 
               document.getElementById('logout-btn').onclick = logoutUser;
               alert("Login successful!");
 
-              if(tool.mode==='embed'){
+              if(tool.mode === 'embed'){
 
-                const ea = document.getElementById(`ea-${tab.id}-${idx}`);
+              const ea = document.getElementById(`ea-${tab.id}-${idx}`);
 
-                if(ea){
-                  ea.classList.toggle('open');
+              if(ea){
+              ea.classList.toggle('open');
 
-                  ea.scrollIntoView({
-                    behavior:'smooth',
-                    block:'nearest'
-                  });
-                }
-
-              } else {
-
-                window.open(tool.link,'_blank');
+              ```
+              ea.scrollIntoView({
+                behavior:'smooth',
+                block:'nearest'
+              });
+              ```
 
               }
 
-              return;
+              } else {
+
+              window.open(tool.link, '_blank');
+
+              }
+
 
             document.querySelector('.nav-right').innerHTML = `
               <div style="
@@ -1042,7 +1028,10 @@ if(visibleItems.length === 0){
     entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
   },{threshold:0.06});
   document.querySelectorAll('.reveal').forEach(el=> obs.observe(el));
-})();
+}
+
+initApp();
+
 </script>
 <script type="module">
 
@@ -1054,6 +1043,11 @@ import {
   signInWithPopup,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+getFirestore,
+collection,
+addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBU2Z2gULJGtcEIOhZRTKht5lKrCMuDUrE",
@@ -1065,6 +1059,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const auth = getAuth(app);
 window.isLoggedIn = false;
@@ -1073,7 +1068,7 @@ window.GoogleAuthProvider = GoogleAuthProvider;
 window.signInWithPopup = signInWithPopup;
 window.googleLogin = async function(){
 
-  const provider = new GoogleAuthProvider();
+  const provider = new window.GoogleAuthProvider();
   provider.setCustomParameters({
   prompt: 'select_account'
 });
@@ -1081,31 +1076,22 @@ window.googleLogin = async function(){
   try{
 
     const result = await signInWithPopup(auth, provider);
-    window.isLoggedIn = true;
 
-    const user = result.user;
-    document.querySelector('.nav-right').innerHTML = `
-      <div style="
-        display:flex;
-        align-items:center;
-        gap:10px;
-        color:white;
-        font-size:14px;
-        font-weight:600;
-      ">
-        <img 
-          src="${user.photoURL}" 
-          style="
-            width:34px;
-            height:34px;
-            border-radius:50%;
-          "
-        >
-        <span>Hi, ${user.displayName.split(' ')[0]} 👋</span>
-      </div>
-    `;
+const user = result.user;
 
-    document.querySelector('.nav-right').innerHTML = `
+await addDoc(collection(db, "users"), {
+name: user.displayName,
+email: user.email,
+uid: user.uid,
+createdAt: new Date()
+});
+
+console.log("Firestore Save Success");
+
+window.isLoggedIn = true;
+
+document.querySelector('.nav-right').innerHTML = `
+
   <div style="
     display:flex;
     align-items:center;
@@ -1126,7 +1112,8 @@ window.googleLogin = async function(){
   </div>
 `;
 
-    console.log(user);
+console.log(user);
+      
 
   } catch(error){
 

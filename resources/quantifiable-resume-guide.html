@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stop Being Vague: The Resume Numbers Playbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #f0e040;
+    --accent2: #ff6b35;
+    --text: #e8e8e8;
+    --text-muted: #888;
+    --red: #ff4d4d;
+    --green: #3ddc84;
+    --green-bg: #0d2218;
+    --red-bg: #1f0d0d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(240,224,64,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 800;
+    line-height: 1.0;
+    max-width: 800px;
+    margin-bottom: 32px;
+  }
+
+  .hero h1 .highlight {
+    color: var(--accent);
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 560px;
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 48px;
+  }
+
+  .hero-stat-row {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero-stat strong {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .hero-stat span {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  /* MAIN CONTENT */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .section-desc {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  /* COMPARISON TABLE */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 14.5px;
+  }
+
+  .compare-table thead tr {
+    background: var(--surface2);
+  }
+
+  .compare-table thead th {
+    padding: 16px 24px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .th-bad { color: var(--red); }
+  .th-good { color: var(--green); }
+  .th-why { color: var(--text-muted); }
+
+  .compare-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .compare-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .compare-table tbody tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .compare-table td {
+    padding: 20px 24px;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .bad-cell {
+    background: var(--red-bg);
+    color: #ff9494;
+    border-right: 1px solid var(--border);
+  }
+
+  .good-cell {
+    background: var(--green-bg);
+    color: #8fffc0;
+    border-right: 1px solid var(--border);
+  }
+
+  .why-cell {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .bad-cell::before {
+    content: '✗ ';
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .good-cell::before {
+    content: '✓ ';
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .num {
+    background: rgba(61, 220, 132, 0.15);
+    color: #3ddc84;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* FORMULA BOX */
+  .formula-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin: 32px 0;
+  }
+
+  .formula-box .formula-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .formula-box .formula-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .formula-box .formula-sub {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    font-weight: 300;
+  }
+
+  /* APPROACH CARDS */
+  .approach-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  .approach-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.2s;
+  }
+
+  .approach-card:hover {
+    border-color: #444;
+    transform: translateY(-2px);
+  }
+
+  .approach-card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 64px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+  }
+
+  .approach-card .card-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .approach-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .approach-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .approach-card .example {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-style: italic;
+  }
+
+  /* QUESTIONS BOX */
+  .questions-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 44px;
+    margin-top: 40px;
+  }
+
+  .questions-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+
+  .questions-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .q-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+  }
+
+  .q-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-weight: 300;
+  }
+
+  .q-item::before {
+    content: '→';
+    color: var(--accent2);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* TYPES OF NUMBERS */
+  .number-types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .number-type-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .number-type-card .nt-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .number-type-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .number-type-card p {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .number-type-card .examples {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* TIPS BOX */
+  .tips-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 32px;
+  }
+
+  .tips-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 18px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14.5px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+  }
+
+  .tips-list li:hover {
+    border-color: #3a3a3a;
+  }
+
+  .tip-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: var(--accent2);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  /* CHEATSHEET */
+  .cheatsheet {
+    background: linear-gradient(135deg, #1a1400 0%, #0d0d0d 60%);
+    border: 1px solid #3a3000;
+    border-radius: 16px;
+    padding: 44px;
+    margin-top: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cheatsheet::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(240,224,64,0.05) 0%, transparent 70%);
+  }
+
+  .cheatsheet-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .cheatsheet-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .cheat-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(240,224,64,0.04);
+    border: 1px solid rgba(240,224,64,0.1);
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .cheat-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 48px 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer p {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  .footer strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  @media (max-width: 700px) {
+    .hero { padding: 60px 24px; }
+    .container { padding: 0 24px; }
+    .approach-grid, .q-grid, .number-types, .cheat-grid { grid-template-columns: 1fr; }
+    .compare-table { font-size: 13px; }
+    .compare-table td { padding: 14px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Resume Writing Masterclass</div>
+    <h1>Stop Being<br><span class="highlight">Vague.</span><br>Use Numbers.</h1>
+    <p class="hero-sub">
+      Hiring managers spend ~7 seconds on a resume. Quantified achievements get remembered. Generic bullets get ignored. Here's how to make every point land.
+    </p>
+    <div class="hero-stat-row">
+      <div class="hero-stat">
+        <strong>7s</strong>
+        <span>Average resume scan time</span>
+      </div>
+      <div class="hero-stat">
+        <strong>40%</strong>
+        <span>Higher callback rate with numbers</span>
+      </div>
+      <div class="hero-stat">
+        <strong>3×</strong>
+        <span>More memorable than generic bullets</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PART 1: BEFORE/AFTER TABLE -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Part 01 — The Problem</div>
+    <h2 class="section-title">Vague vs. Quantified:<br>Side-by-Side</h2>
+    <p class="section-desc">Every weak bullet has a stronger version. Here's what the transformation looks like in practice — across different functions.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th class="th-bad" style="width:36%">❌ Generic (What Most People Write)</th>
+          <th class="th-good" style="width:36%">✅ Quantified (What Gets You Hired)</th>
+          <th class="th-why" style="width:28%">Why it works</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="bad-cell">Helped improve workflow efficiency using data and SQL.</td>
+          <td class="good-cell">Automated reporting workflows using SQL and dashboards, reducing manual effort by <span class="num">10%</span> across a team of <span class="num">12</span>.</td>
+          <td class="why-cell">Shows scale of impact, the team affected, and a specific outcome — not just activity.</td>
+        </tr>
+        <tr>
+          <td class="bad-cell">Collaborated with stakeholders to reduce requirement ambiguities.</td>
+          <td class="good-cell">Streamlined requirements intake with structured templates in JIRA + Confluence, cutting ambiguity-related rework by <span class="num">20%</span> over 2 quarters.</td>
+          <td class="why-cell">Adds a timeframe and a measurable reduction — turns a soft skill into a hard result.</td>
+        </tr>
+        <tr>
+          <td class="bad-cell">Worked on product discovery and A/B testing to improve features.</td>
+          <td class="good-cell">Led discovery and A/B experimentation cycles that improved feature adoption by <span class="num">18%</span> within <span class="num">3 months</span> of launch.</td>
+          <td class="why-cell">Ownership word ("Led"), a specific metric, and a timeline — three power signals in one bullet.</td>
+        </tr>
+        <tr>
+          <td class="bad-cell">Managed a product backlog and delivered features on time.</td>
+          <td class="good-cell">Prioritized and maintained a backlog of <span class="num">60+ items</span>, achieving <span class="num">90%+</span> sprint delivery adherence over <span class="num">8 sprints</span>.</td>
+          <td class="why-cell">The volume (60+) and consistency (8 sprints) make this verifiable and impressive.</td>
+        </tr>
+        <tr>
+          <td class="bad-cell">Onboarded new clients and helped them get started with the product.</td>
+          <td class="good-cell">Onboarded <span class="num">6 top advertising agencies</span>, driving early product adoption and generating pilot feedback that shaped <span class="num">3</span> key feature improvements.</td>
+          <td class="why-cell">Specific client count + downstream impact — ties effort to business outcome.</td>
+        </tr>
+        <tr>
+          <td class="bad-cell">Analyzed customer feedback and made product improvements.</td>
+          <td class="good-cell">Synthesized feedback from <span class="num">500+ pilot users</span> to drive data-backed enhancements, improving user adoption scores by <span class="num">22%</span>.</td>
+          <td class="why-cell">The audience size (500+) validates the significance; the % gives a tangible win.</td>
+        </tr>
+        <tr>
+          <td class="bad-cell">Led cross-functional workshops and improved team communication.</td>
+          <td class="good-cell">Facilitated <span class="num">10+ cross-functional workshops</span> with <span class="num">30+ stakeholders</span> across India and Philippines, cutting misalignment-driven delays by ~<span class="num">15%</span>.</td>
+          <td class="why-cell">Volume of effort + geographic scale + outcome — transforms a soft win into a hard one.</td>
+        </tr>
+        <tr>
+          <td class="bad-cell">Supported product launch activities and post-launch tracking.</td>
+          <td class="good-cell">Coordinated end-to-end launch for <span class="num">2 major features</span>, overseeing UAT with <span class="num">40+ testers</span> and tracking adoption metrics for <span class="num">90 days</span> post-launch.</td>
+          <td class="why-cell">Specifying scope, scale, and time horizon turns a vague role into a defined achievement.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PART 2: THE FORMULA -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Part 02 — The Formula</div>
+    <h2 class="section-title">Every Great Bullet<br>Follows a Pattern</h2>
+    <p class="section-desc">You don't need to memorise examples. Just follow this structure and fill it in.</p>
+
+    <div class="formula-box">
+      <div class="formula-label">The CAR Formula</div>
+      <div class="formula-text">
+        [Action Verb] + [What You Did] + [How/Tool] + [Result/Impact with Number]
+      </div>
+      <div class="formula-sub">
+        Example: <em>"Streamlined [what] requirement intake using JIRA [how], reducing ambiguity-related rework by 20% [result]."</em>
+      </div>
+    </div>
+
+    <div class="formula-box" style="border-left-color: var(--accent2);">
+      <div class="formula-label" style="color: var(--accent2);">The XYZ Formula (Google Recruiter Method)</div>
+      <div class="formula-text">
+        Accomplished [X], as measured by [Y], by doing [Z]
+      </div>
+      <div class="formula-sub">
+        Example: <em>"Improved feature adoption by 18% [X], measured via in-product tracking [Y], by running structured A/B experiments across 3 user segments [Z]."</em>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+      <h3 style="font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--text);">Types of Numbers You Can Use</h3>
+      <div class="number-types">
+        <div class="number-type-card">
+          <span class="nt-icon">📊</span>
+          <h4>Percentages</h4>
+          <p>Show relative improvement — great for efficiency, adoption, error reduction.</p>
+          <div class="examples">+18% adoption, −20% rework, 90% adherence</div>
+        </div>
+        <div class="number-type-card">
+          <span class="nt-icon">🔢</span>
+          <h4>Absolute Counts</h4>
+          <p>Show scale of work — users impacted, items handled, clients onboarded.</p>
+          <div class="examples">500+ users, 6 clients, 60+ backlog items</div>
+        </div>
+        <div class="number-type-card">
+          <span class="nt-icon">⏱️</span>
+          <h4>Time & Frequency</h4>
+          <p>Show speed or consistency — how fast, how often, over what period.</p>
+          <div class="examples">3 months, 8 sprints, weekly cadence</div>
+        </div>
+        <div class="number-type-card">
+          <span class="nt-icon">💰</span>
+          <h4>Revenue / Cost</h4>
+          <p>Show business value — revenue generated, costs saved, budgets managed.</p>
+          <div class="examples">₹2.5L revenue, $50K cost saved</div>
+        </div>
+        <div class="number-type-card">
+          <span class="nt-icon">👥</span>
+          <h4>Team / Stakeholders</h4>
+          <p>Show complexity of coordination — how many people, geographies, teams.</p>
+          <div class="examples">30+ stakeholders, 2 countries, 5 teams</div>
+        </div>
+        <div class="number-type-card">
+          <span class="nt-icon">🎯</span>
+          <h4>Rankings / Ratings</h4>
+          <p>Show standing — top performer, NPS scores, review ratings.</p>
+          <div class="examples">Top 10% cohort, 4.8/5 CSAT, Rank 2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PART 3: HOW TO FIND YOUR NUMBERS -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Part 03 — The Hard Part</div>
+    <h2 class="section-title">"But I Don't Know<br>My Numbers."</h2>
+    <p class="section-desc">This is what everyone says. Here are 6 practical approaches to find or estimate them — honestly.</p>
+
+    <div class="approach-grid">
+      <div class="approach-card" data-num="1">
+        <span class="card-icon">📬</span>
+        <h3>Mine Old Emails & Reports</h3>
+        <p>Go back to your sent folder, sprint reviews, status updates, and QBRs. You've written your numbers already — you just haven't collected them. Search for words like "improved", "reduced", "completed", "shipped".</p>
+        <div class="example">→ Found a stakeholder email saying "sprint delivered on time for 4th week in a row"? That's a number.</div>
+      </div>
+
+      <div class="approach-card" data-num="2">
+        <span class="card-icon">🗓️</span>
+        <h3>Ask Your Manager / Team Lead</h3>
+        <p>Your manager tracks impact you may not have visibility into. A simple message — "Hey, do you recall the impact of the X project I led?" — can surface data you'd never find alone. Most are happy to share.</p>
+        <div class="example">→ "The campaign you ran contributed to a 12% lift in Q3 signups" — that's a resume bullet.</div>
+      </div>
+
+      <div class="approach-card" data-num="3">
+        <span class="card-icon">📐</span>
+        <h3>Estimate with Ranges</h3>
+        <p>You don't need exact numbers. Use honest ranges or approximations. "Reduced X by ~15–20%" or "Impacted 200+ users" is credible. The key is your estimate should be conservative and defensible in an interview.</p>
+        <div class="example">→ If you saved ~2 hours/week for a 10-person team, that's ~1,000 hours/year saved — use it.</div>
+      </div>
+
+      <div class="approach-card" data-num="4">
+        <span class="card-icon">🔗</span>
+        <h3>Look at Tool Dashboards</h3>
+        <p>JIRA, Confluence, Google Analytics, Mixpanel, Tableau, Salesforce — all of these log your activity and output. Pull your own ticket history, sprint velocity reports, or campaign dashboards and extract data.</p>
+        <div class="example">→ JIRA shows you closed 140 tickets in 6 months with an avg resolution time of 2 days? That's usable.</div>
+      </div>
+
+      <div class="approach-card" data-num="5">
+        <span class="card-icon">🧮</span>
+        <h3>Reverse-Engineer from Context</h3>
+        <p>If you know the size of the audience or system you touched, you can work backwards. "Our platform had 10K DAU, my feature was shown to 30% of them" = you impacted 3,000 users. Do the math and be upfront about it.</p>
+        <div class="example">→ "Feature rolled out to 30% of 10K users = ~3,000 users impacted in the pilot."</div>
+      </div>
+
+      <div class="approach-card" data-num="6">
+        <span class="card-icon">🤝</span>
+        <h3>Use Benchmark Data</h3>
+        <p>If your individual numbers aren't available, use industry/team benchmarks as context. "Our team's sprint adherence improved from ~60% to 90%+ after I introduced structured backlog reviews" — even if that came from a team retro, it's valid.</p>
+        <div class="example">→ Industry avg NPS for SaaS is 30. If yours was 45, say: "Maintained NPS 50% above industry benchmark."</div>
+      </div>
+    </div>
+
+    <!-- ASK YOURSELF QUESTIONS -->
+    <div class="questions-section">
+      <div class="questions-title">Questions to Ask Yourself for Every Role</div>
+      <div class="questions-sub">If you can answer even half of these, you'll have enough to quantify your bullets.</div>
+      <div class="q-grid">
+        <div class="q-item">How many people / users / clients did this affect?</div>
+        <div class="q-item">How long did it take vs. how long it would have taken before?</div>
+        <div class="q-item">What was the team size I worked with or led?</div>
+        <div class="q-item">How many times did this repeat (weekly, monthly)?</div>
+        <div class="q-item">What metric went up or down because of my work?</div>
+        <div class="q-item">What was the before vs. after state?</div>
+        <div class="q-item">How much revenue, cost, or time was at stake?</div>
+        <div class="q-item">How many items, features, or deliverables were involved?</div>
+        <div class="q-item">What was the success rate / completion rate / adherence %?</div>
+        <div class="q-item">What was the geography or scope (cities, countries, teams)?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PART 4: COMMON MISTAKES -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Part 04 — Watch Out</div>
+    <h2 class="section-title">Common Mistakes<br>Even With Numbers</h2>
+    <p class="section-desc">Numbers help, but only when done right. Here's what trips people up.</p>
+
+    <ul class="tips-list">
+      <li>
+        <div class="tip-num">1</div>
+        <div><strong style="color: var(--text);">Don't invent numbers.</strong> Recruiters ask about them in interviews. If you can't recall or recreate the logic behind a number, don't put it. Use ranges or qualitative language instead — "significantly", "measurably" are okay if you have nothing else.</div>
+      </li>
+      <li>
+        <div class="tip-num">2</div>
+        <div><strong style="color: var(--text);">Don't quantify activity, quantify outcome.</strong> "Sent 200 emails" is activity. "Ran a 200-touch outreach campaign that converted at 12%, generating 24 qualified leads" is outcome. Always ask: so what?</div>
+      </li>
+      <li>
+        <div class="tip-num">3</div>
+        <div><strong style="color: var(--text);">Don't stuff every bullet with numbers.</strong> 2–3 numbers per bullet is usually the max before it starts reading like a spreadsheet. Pick the most impactful metric and frame around it.</div>
+      </li>
+      <li>
+        <div class="tip-num">4</div>
+        <div><strong style="color: var(--text);">Don't use irrelevant vanity metrics.</strong> "Our team had 50 people" tells nothing about your contribution. Be specific to your own impact, not your company's size or team's headcount unless it shows complexity you managed.</div>
+      </li>
+      <li>
+        <div class="tip-num">5</div>
+        <div><strong style="color: var(--text);">Don't forget to attribute clearly.</strong> If a result was a team effort, say "contributed to" or "supported X% improvement" rather than claiming sole ownership. Integrity matters — and interviewers probe this.</div>
+      </li>
+      <li>
+        <div class="tip-num">6</div>
+        <div><strong style="color: var(--text);">Don't lead with the number.</strong> Lead with the action, then support it with data. "Reduced churn by 15% by implementing weekly NPS reviews" > "15% churn reduction via weekly NPS reviews." Verbs show agency.</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- CHEATSHEET -->
+<section class="section" style="border-bottom: none;">
+  <div class="container">
+    <div class="section-label">Quick Reference</div>
+    <h2 class="section-title">The Cheat Sheet</h2>
+    <p class="section-desc">Tear this off. Use it every time you write or update a resume bullet.</p>
+
+    <div class="cheatsheet">
+      <div class="cheatsheet-title">📋 Resume Numbers Cheat Sheet</div>
+      <div class="cheatsheet-sub">One question for every weak bullet: "Compared to what? For how many people? Over how long?"</div>
+
+      <div class="cheat-grid">
+        <div class="cheat-item">
+          <span class="cheat-icon">✍️</span>
+          <div>Start bullets with a strong action verb: Led, Built, Reduced, Launched, Improved, Streamlined, Partnered, Drove</div>
+        </div>
+        <div class="cheat-item">
+          <span class="cheat-icon">🔢</span>
+          <div>Add at least one number: %, count, duration, frequency, ranking, revenue, or team size</div>
+        </div>
+        <div class="cheat-item">
+          <span class="cheat-icon">🎯</span>
+          <div>Connect effort to outcome: "by doing X" → "resulting in Y" — the causal link is the whole point</div>
+        </div>
+        <div class="cheat-item">
+          <span class="cheat-icon">📊</span>
+          <div>Use ranges if uncertain: "~15–20%" or "50+" are honest and still impactful</div>
+        </div>
+        <div class="cheat-item">
+          <span class="cheat-icon">📅</span>
+          <div>Add time context when it shows speed or consistency: "within 3 months", "across 8 sprints"</div>
+        </div>
+        <div class="cheat-item">
+          <span class="cheat-icon">🚫</span>
+          <div>Delete any bullet that a robot (or anyone else) could have written for your job — those are job descriptions, not achievements</div>
+        </div>
+        <div class="cheat-item">
+          <span class="cheat-icon">👂</span>
+          <div>Read each bullet out loud. If it sounds like something you'd write on a form, rewrite it</div>
+        </div>
+        <div class="cheat-item">
+          <span class="cheat-icon">💬</span>
+          <div>For every bullet, ask: "Can I defend this number in a 30-second interview answer?" If yes, keep it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Built for job seekers who want to stand out. <strong>Your experience is real — make your resume prove it.</strong></p>
+</footer>
+
+</body>
+</html>
