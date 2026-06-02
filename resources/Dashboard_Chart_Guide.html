@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboarding & Chart Guide — Data Analyst</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F4EF;
+  --surface: #FFFFFF;
+  --border: #E2DDD6;
+  --ink: #1A1208;
+  --ink2: #4A4035;
+  --ink3: #8A7E72;
+  --accent: #C4450A;
+  --accent2: #1B4FD8;
+  --accent3: #0D7A5F;
+  --yellow: #E8A020;
+  --purple: #6B35C4;
+  --pink: #C4357A;
+  --teal: #0D8080;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'DM Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 12px;
+  --shadow: 0 2px 16px rgba(26,18,8,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.65; }
+
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  color: #fff;
+  padding: 80px 40px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 40px,
+    rgba(196,69,10,0.06) 40px, rgba(196,69,10,0.06) 41px
+  );
+}
+.hero-label {
+  font-family:var(--mono); font-size:11px; letter-spacing:3px;
+  color:var(--accent); text-transform:uppercase; margin-bottom:16px;
+}
+.hero h1 {
+  font-family:var(--serif); font-size:clamp(36px,6vw,72px);
+  line-height:1.1; margin-bottom:20px; position:relative;
+}
+.hero h1 span { color:var(--accent); }
+.hero-sub {
+  font-size:17px; color:rgba(255,255,255,0.6); max-width:560px;
+  margin:0 auto 40px; position:relative;
+}
+.hero-rule {
+  font-family:var(--mono); font-size:13px;
+  background:rgba(196,69,10,0.15); border:1px solid rgba(196,69,10,0.3);
+  color:#F4A87A; padding:12px 24px; border-radius:6px;
+  display:inline-block; position:relative;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top:0; z-index:100;
+  background:rgba(247,244,239,0.95); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex; gap:0; overflow-x:auto;
+}
+.nav a {
+  font-family:var(--mono); font-size:11px; letter-spacing:1px;
+  text-decoration:none; color:var(--ink3); padding:14px 16px;
+  white-space:nowrap; border-bottom:2px solid transparent;
+  transition:all .2s; text-transform:uppercase;
+}
+.nav a:hover, .nav a.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* ── WRAPPER ── */
+.wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
+
+/* ── SECTION ── */
+.section { padding:72px 0 48px; border-bottom:1px solid var(--border); }
+.section-label {
+  font-family:var(--mono); font-size:11px; letter-spacing:3px;
+  color:var(--accent); text-transform:uppercase; margin-bottom:12px;
+}
+.section-title {
+  font-family:var(--serif); font-size:clamp(28px,4vw,44px);
+  line-height:1.15; margin-bottom:8px;
+}
+.section-sub { color:var(--ink3); font-size:16px; max-width:600px; margin-bottom:40px; }
+
+/* ── CHART CARD ── */
+.chart-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+  box-shadow:var(--shadow); margin-bottom:40px;
+}
+.chart-card-head {
+  padding:20px 24px 0;
+  display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+}
+.chart-num {
+  font-family:var(--mono); font-size:11px; letter-spacing:2px;
+  color:var(--ink3); text-transform:uppercase; margin-bottom:4px;
+}
+.chart-name {
+  font-family:var(--serif); font-size:26px; margin-bottom:4px;
+}
+.chart-tagline { font-size:14px; color:var(--ink3); }
+.chart-badge {
+  font-family:var(--mono); font-size:10px; letter-spacing:1px;
+  padding:5px 12px; border-radius:4px; white-space:nowrap;
+  text-transform:uppercase; flex-shrink:0; margin-top:4px;
+}
+.chart-body {
+  display:grid; grid-template-columns:1fr 340px; gap:0;
+  min-height:340px;
+}
+@media(max-width:780px){ .chart-body { grid-template-columns:1fr; } }
+.chart-canvas-wrap {
+  padding:24px; border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+}
+.chart-canvas-wrap canvas { flex:1; max-height:280px; }
+.chart-axis-note {
+  font-family:var(--mono); font-size:10px; color:var(--ink3);
+  margin-top:8px; display:flex; gap:16px; flex-wrap:wrap;
+}
+.chart-axis-note span { display:flex; align-items:center; gap:4px; }
+.chart-axis-note strong { color:var(--ink); }
+.chart-info { padding:24px; display:flex; flex-direction:column; gap:0; }
+.info-row {
+  padding:10px 0; border-bottom:1px solid var(--border);
+  display:grid; grid-template-columns:90px 1fr; gap:12px;
+}
+.info-row:last-child { border-bottom:none; }
+.info-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:1px;
+  color:var(--ink3); text-transform:uppercase; padding-top:2px;
+}
+.info-val { font-size:13.5px; color:var(--ink2); line-height:1.5; }
+.info-val.formula { font-family:var(--mono); font-size:12px; color:var(--accent2); }
+.info-val.rule { font-weight:600; color:var(--accent3); }
+.info-val.avoid { color:var(--accent); }
+
+/* ── RULEBOOK ── */
+.rulebook { margin-bottom:40px; }
+.rule-row {
+  display:grid; grid-template-columns:260px 1fr;
+  border:1px solid var(--border); border-top:none;
+}
+.rule-row:first-child { border-top:1px solid var(--border); border-radius:var(--radius) var(--radius) 0 0; }
+.rule-row:last-child { border-radius:0 0 var(--radius) var(--radius); }
+.rule-row:nth-child(even) .rule-q { background:#F0EDE8; }
+.rule-row:nth-child(even) .rule-a { background:#FAFAF8; }
+.rule-q {
+  padding:14px 18px; background:var(--bg); border-right:1px solid var(--border);
+  font-weight:600; font-size:13.5px; color:var(--ink);
+}
+.rule-a { padding:14px 18px; font-size:13.5px; color:var(--ink2); }
+.rule-head { background:var(--ink); color:#fff; font-weight:700; }
+.rule-head .rule-q, .rule-head .rule-a {
+  background:transparent; color:#fff; border-color:rgba(255,255,255,0.1);
+  font-family:var(--mono); font-size:11px; letter-spacing:1px;
+}
+
+/* ── TOOLS ── */
+.tools-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+.tool-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:24px; position:relative;
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.tool-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:4px;
+}
+.tool-card:nth-child(1)::before { background:var(--yellow); }
+.tool-card:nth-child(2)::before { background:var(--accent2); }
+.tool-card:nth-child(3)::before { background:#4285F4; }
+.tool-card:nth-child(4)::before { background:var(--accent3); }
+.tool-card:nth-child(5)::before { background:var(--purple); }
+.tool-card:nth-child(6)::before { background:var(--teal); }
+.tool-icon { font-size:28px; margin-bottom:12px; }
+.tool-name { font-family:var(--serif); font-size:20px; margin-bottom:4px; }
+.tool-level {
+  font-family:var(--mono); font-size:10px; color:var(--ink3);
+  letter-spacing:1px; text-transform:uppercase; margin-bottom:12px;
+}
+.tool-desc { font-size:13.5px; color:var(--ink2); margin-bottom:14px; line-height:1.55; }
+.tool-tip {
+  font-size:12.5px; background:var(--bg); border-radius:6px;
+  padding:8px 12px; color:var(--accent3); font-weight:500; border-left:3px solid var(--accent3);
+}
+.tool-cost {
+  font-family:var(--mono); font-size:10px; color:var(--ink3);
+  margin-bottom:10px;
+}
+
+/* ── RESOURCES ── */
+.resources-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+.resource-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:18px; box-shadow:var(--shadow);
+}
+.resource-cat {
+  font-family:var(--mono); font-size:10px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--accent); margin-bottom:12px;
+}
+.resource-item { margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.resource-item:last-child { margin:0; padding:0; border:none; }
+.resource-name { font-weight:600; font-size:13.5px; margin-bottom:2px; }
+.resource-desc { font-size:12.5px; color:var(--ink3); line-height:1.5; }
+
+/* ── CHEAT TABLE ── */
+.cheat-table { width:100%; border-collapse:collapse; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.cheat-table th {
+  background:var(--ink); color:#fff; font-family:var(--mono);
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  padding:12px 16px; text-align:left;
+}
+.cheat-table td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--border); vertical-align:top; }
+.cheat-table tr:last-child td { border:none; }
+.cheat-table tr:nth-child(even) td { background:#F9F7F4; }
+.cheat-when { color:var(--ink2); }
+.cheat-chart { font-weight:700; color:var(--accent3); font-family:var(--mono); font-size:12px; }
+.cheat-rule { color:var(--ink3); font-size:12px; font-style:italic; }
+
+/* ── MISTAKES ── */
+.mistakes-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:600px){ .mistakes-grid { grid-template-columns:1fr; } }
+.mistake-card {
+  background:var(--surface); border:1px solid #F0C4B4;
+  border-left:4px solid var(--accent);
+  border-radius:8px; padding:14px 16px;
+}
+.mistake-title { font-weight:700; font-size:13.5px; color:var(--accent); margin-bottom:4px; }
+.mistake-text { font-size:12.5px; color:var(--ink2); line-height:1.5; }
+
+/* ── FOOTER ── */
+.footer {
+  background:var(--ink); color:rgba(255,255,255,0.5);
+  text-align:center; padding:40px 24px;
+  font-family:var(--mono); font-size:11px; letter-spacing:1px;
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Data Analyst Study Guide</div>
+  <h1>Dashboarding &<br><span>Chart Selection</span></h1>
+  <p class="hero-sub">Every chart type illustrated with real data. Learn when to use each, what goes on each axis, and the rules that separate good dashboards from bad ones.</p>
+  <div class="hero-rule">"Which chart?" is a decision skill, not a technical skill.</div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#charts">Charts</a>
+  <a href="#rulebook">Rulebook</a>
+  <a href="#mistakes">Mistakes</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+  <a href="#tools">Tools</a>
+  <a href="#resources">Resources</a>
+  <a href="#sample-dashboard">Sample Dashboard</a>
+</nav>
+
+<!-- SECTION 1: CHART TYPES -->
+<div id="charts" class="section">
+<div class="wrap">
+  <div class="section-label">Section 01</div>
+  <div class="section-title">10 Chart Types — Illustrated</div>
+  <p class="section-sub">Each chart shown with real sample data, axis labels, and the rules that govern it.</p>
+
+  <!-- ── CHART 1: BAR CHART ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 01</div>
+        <div class="chart-name">Bar / Column Chart</div>
+        <div class="chart-tagline">Compare values across categories</div>
+      </div>
+      <span class="chart-badge" style="background:#E8F4FF;color:#1B4FD8;">Most Used</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="barChart"></canvas>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Category</strong> (Region)</span>
+          <span>Y-axis → <strong>Value</strong> (Sales ₹)</span>
+          <span>Sort → <strong>Descending by value</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Comparing discrete items — regions, products, teams, months</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">Category (Region, Product, Person)</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Measure (Revenue, Count, Score)</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Sort bars by value (desc) unless time-based. Always start Y at zero.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">More than 12–15 categories. Switch to treemap instead.</span></div>
+        <div class="info-row"><span class="info-label">Variants</span><span class="info-val">Horizontal bar = better for long labels. Grouped = compare two series.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 2: LINE CHART ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 02</div>
+        <div class="chart-name">Line Chart</div>
+        <div class="chart-tagline">Show trends over time</div>
+      </div>
+      <span class="chart-badge" style="background:#E8FFF6;color:#0D7A5F;">Time Series</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="lineChart"></canvas>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Time</strong> (Month)</span>
+          <span>Y-axis → <strong>Measure</strong> (Revenue ₹)</span>
+          <span>Lines → <strong>Max 4–5 series</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Data is continuous over time — trends, growth, seasonality</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">ALWAYS Time (Date, Month, Quarter, Year)</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Measure (Revenue, Users, Temperature)</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Label lines directly. Use consistent date intervals. Time always on X.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">Categories without natural order. Single data points.</span></div>
+        <div class="info-row"><span class="info-label">Variants</span><span class="info-val">Multiple lines for comparison. Dashed line for forecast/target.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 3: PIE CHART ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 03</div>
+        <div class="chart-name">Pie / Donut Chart</div>
+        <div class="chart-tagline">Show part-to-whole composition</div>
+      </div>
+      <span class="chart-badge" style="background:#FFF3E8;color:#C4450A;">Use Sparingly</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="pieChart"></canvas>
+        <div class="chart-axis-note">
+          <span>Segments → <strong>Categories</strong></span>
+          <span>Size → <strong>% of total</strong></span>
+          <span>Max → <strong>6 slices</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Showing how a 100% total breaks into parts. Max 6 slices.</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">N/A — segments = categories</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">N/A — segment size = % share</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Always show %. Sort largest to smallest. Start at 12 o'clock.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">Never compare two pie charts. Never >6 slices. Hard to read accurately.</span></div>
+        <div class="info-row"><span class="info-label">Variants</span><span class="info-val">Donut = modern, allows centre KPI. Treemap = better for many categories.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 4: SCATTER ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 04</div>
+        <div class="chart-name">Scatter Plot</div>
+        <div class="chart-tagline">Show correlation between two variables</div>
+      </div>
+      <span class="chart-badge" style="background:#F3EEFF;color:#6B35C4;">Analytical</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="scatterChart"></canvas>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Independent var</strong> (Ad Spend)</span>
+          <span>Y-axis → <strong>Dependent var</strong> (Revenue)</span>
+          <span>Each dot → <strong>One data point</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Exploring relationship between two numeric variables. Finding outliers.</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">Independent variable (the cause / explanatory factor)</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Dependent variable (the outcome / effect)</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Add a trendline. Label outliers. Use quadrant lines for 2×2 matrix.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">Categorical data on either axis. Dense scatter without trendline.</span></div>
+        <div class="info-row"><span class="info-label">Variants</span><span class="info-val">Bubble chart = 3rd variable shown as dot size. Connected scatter for time.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 5: AREA CHART ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 05</div>
+        <div class="chart-name">Stacked Area Chart</div>
+        <div class="chart-tagline">Show trend + composition over time</div>
+      </div>
+      <span class="chart-badge" style="background:#E8FFF6;color:#0D7A5F;">Time + Mix</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="areaChart"></canvas>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Time</strong> (Quarter)</span>
+          <span>Y-axis → <strong>Cumulative measure</strong></span>
+          <span>Areas → <strong>Max 4 series</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Showing trend over time AND how composition shifts — who contributed what.</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">Time (same as line chart)</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Cumulative or stacked measure</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Limit to 3–4 series. Use opacity. Label each band directly.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">Heavy overlap between series. Never 3D area charts.</span></div>
+        <div class="info-row"><span class="info-label">Variants</span><span class="info-val">100% stacked area = shows changing % mix (not volume).</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 6: HEATMAP ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 06</div>
+        <div class="chart-name">Heatmap / Matrix</div>
+        <div class="chart-tagline">Find patterns across two dimensions</div>
+      </div>
+      <span class="chart-badge" style="background:#FFE8E8;color:#C4450A;">Pattern Finder</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap" style="position:relative;">
+        <div id="heatmapChart" style="flex:1;"></div>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Day of Week</strong></span>
+          <span>Y-axis → <strong>Hour of Day</strong></span>
+          <span>Colour → <strong>Sales volume</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Comparing across two categorical dimensions at once. Spotting hot/cold zones.</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">Category A (Day of Week, Product)</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Category B (Hour, Region, Quarter)</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Always include a colour legend. Use sequential scale: light=low, dark=high.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">When exact values are critical. Watch for colour-blindness accessibility.</span></div>
+        <div class="info-row"><span class="info-label">Variants</span><span class="info-val">Correlation matrix (numeric). Geographic heatmap (map overlay).</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 7: KPI CARD ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 07</div>
+        <div class="chart-name">KPI Card / Scorecard</div>
+        <div class="chart-tagline">Highlight one critical metric at a glance</div>
+      </div>
+      <span class="chart-badge" style="background:#E8FFF6;color:#0D7A5F;">Always First</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;">
+          <div style="background:#F0F9FF;border:1px solid #BDD7EE;border-top:4px solid #1B4FD8;border-radius:10px;padding:20px;text-align:center;">
+            <div style="font-family:var(--mono);font-size:11px;color:#64748B;letter-spacing:1px;margin-bottom:8px;">TOTAL REVENUE</div>
+            <div style="font-family:var(--serif);font-size:36px;color:#1B4FD8;margin-bottom:4px;">₹2.4Cr</div>
+            <div style="font-size:13px;color:#0D7A5F;font-weight:600;">▲ +12% vs last month</div>
+          </div>
+          <div style="background:#FFF8F0;border:1px solid #FDBF8F;border-top:4px solid #E8A020;border-radius:10px;padding:20px;text-align:center;">
+            <div style="font-family:var(--mono);font-size:11px;color:#64748B;letter-spacing:1px;margin-bottom:8px;">TARGET HIT</div>
+            <div style="font-family:var(--serif);font-size:36px;color:#E8A020;margin-bottom:4px;">84%</div>
+            <div style="font-size:13px;color:#C4450A;font-weight:600;">▼ Target: ₹2.85Cr</div>
+          </div>
+          <div style="background:#F0FFF8;border:1px solid #86EFAC;border-top:4px solid #0D7A5F;border-radius:10px;padding:20px;text-align:center;">
+            <div style="font-family:var(--mono);font-size:11px;color:#64748B;letter-spacing:1px;margin-bottom:8px;">NPS SCORE</div>
+            <div style="font-family:var(--serif);font-size:36px;color:#0D7A5F;margin-bottom:4px;">72</div>
+            <div style="font-size:13px;color:#0D7A5F;font-weight:600;">▲ Target: 70 ✓</div>
+          </div>
+          <div style="background:#FFF0F0;border:1px solid #FCA5A5;border-top:4px solid #C4450A;border-radius:10px;padding:20px;text-align:center;">
+            <div style="font-family:var(--mono);font-size:11px;color:#64748B;letter-spacing:1px;margin-bottom:8px;">OPEN TICKETS</div>
+            <div style="font-family:var(--serif);font-size:36px;color:#C4450A;margin-bottom:4px;">142</div>
+            <div style="font-size:13px;color:#C4450A;font-weight:600;">▲ +18 since yesterday</div>
+          </div>
+        </div>
+        <div class="chart-axis-note" style="width:100%;">
+          <span>Structure → <strong>Big number + label + change + status colour</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Top of any dashboard. The most critical number the audience must see first.</span></div>
+        <div class="info-row"><span class="info-label">Structure</span><span class="info-val formula">Big number · label · % change · vs target/prior period</span></div>
+        <div class="info-row"><span class="info-label">Status</span><span class="info-val formula">Green = on track · Amber = at risk · Red = off track</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">A number without context is meaningless. Always show vs something.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">KPI card without comparison metric. Four elements max — nothing more.</span></div>
+        <div class="info-row"><span class="info-label">Examples</span><span class="info-val">Revenue · NPS · Conversion Rate · Churn · Open Tickets</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 8: WATERFALL ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 08</div>
+        <div class="chart-name">Waterfall Chart</div>
+        <div class="chart-tagline">Show incremental contributions to a total</div>
+      </div>
+      <span class="chart-badge" style="background:#F3EEFF;color:#6B35C4;">Bridge Chart</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="waterfallChart"></canvas>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Steps / Components</strong></span>
+          <span>Y-axis → <strong>Cumulative value</strong></span>
+          <span>🟢 Add &nbsp; 🔴 Subtract &nbsp; ⬜ Total</span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Explaining how you got from Start to End through positive and negative steps.</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">Steps or components (Start → changes → End)</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Cumulative value</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Show Start + End as solid bars. Label each step with its change value.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">More than 8–10 steps. Not for time trends — use line chart instead.</span></div>
+        <div class="info-row"><span class="info-label">Examples</span><span class="info-val">Profit Bridge · Budget vs Actual · Cash Flow · P&L Breakdown</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 9: HISTOGRAM ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 09</div>
+        <div class="chart-name">Histogram</div>
+        <div class="chart-tagline">Show distribution of a continuous variable</div>
+      </div>
+      <span class="chart-badge" style="background:#F0F0F0;color:#4A4035;">Distribution</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="histogramChart"></canvas>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Value ranges (bins)</strong></span>
+          <span>Y-axis → <strong>Frequency / Count</strong></span>
+          <span>Note → <strong>Bars MUST touch (continuous)</strong></span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Understanding how data is spread. Is it normal? Skewed? Outliers?</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">Value ranges / bins of the continuous variable</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Count / Frequency of observations per bin</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Bars must TOUCH each other (unlike bar chart). Choose bin size carefully.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">Don't confuse with bar chart. Bars touching = continuous. Gaps = discrete.</span></div>
+        <div class="info-row"><span class="info-label">Examples</span><span class="info-val">Order Value Distribution · Age Distribution · Salary Frequency</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHART 10: GROUPED BAR ── -->
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <div class="chart-num">Chart 10</div>
+        <div class="chart-name">Grouped / Stacked Bar</div>
+        <div class="chart-tagline">Compare categories across two dimensions</div>
+      </div>
+      <span class="chart-badge" style="background:#E8F4FF;color:#1B4FD8;">2-Dimension</span>
+    </div>
+    <div class="chart-body">
+      <div class="chart-canvas-wrap">
+        <canvas id="groupedChart"></canvas>
+        <div class="chart-axis-note">
+          <span>X-axis → <strong>Primary category</strong> (Region)</span>
+          <span>Y-axis → <strong>Measure</strong> (Sales)</span>
+          <span>Groups → <strong>Secondary category</strong> (Product)</span>
+        </div>
+      </div>
+      <div class="chart-info">
+        <div class="info-row"><span class="info-label">Use When</span><span class="info-val">Comparing values across two categorical dimensions simultaneously.</span></div>
+        <div class="info-row"><span class="info-label">X-Axis</span><span class="info-val formula">Primary category (Region, Quarter)</span></div>
+        <div class="info-row"><span class="info-label">Y-Axis</span><span class="info-val formula">Measure (Revenue, Units)</span></div>
+        <div class="info-row"><span class="info-label">Golden Rule</span><span class="info-val rule">Grouped = compare individual values. Stacked = compare totals + composition.</span></div>
+        <div class="info-row"><span class="info-label">Avoid</span><span class="info-val avoid">More than 3–4 groups per cluster. Use consistent colour per series.</span></div>
+        <div class="info-row"><span class="info-label">Examples</span><span class="info-val">Sales by Region × Product · Revenue by Quarter × Channel</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+</div><!-- /section -->
+
+<!-- SECTION 2: RULEBOOK -->
+<div id="rulebook" class="section">
+<div class="wrap">
+  <div class="section-label">Section 02</div>
+  <div class="section-title">The Decision Rulebook</div>
+  <p class="section-sub">Ask these 8 questions in order. The first match wins.</p>
+
+  <div class="rulebook">
+    <div class="rule-row rule-head">
+      <div class="rule-q">Question to Ask</div>
+      <div class="rule-a">Chart to Choose</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">What am I showing?</div>
+      <div class="rule-a"><strong>Comparison</strong> → Bar/Column &nbsp;|&nbsp; <strong>Trend</strong> → Line &nbsp;|&nbsp; <strong>Composition</strong> → Pie/Treemap &nbsp;|&nbsp; <strong>Relationship</strong> → Scatter &nbsp;|&nbsp; <strong>Distribution</strong> → Histogram</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">Is time involved?</div>
+      <div class="rule-a"><strong>Yes, continuous</strong> → Line or Area &nbsp;|&nbsp; <strong>Yes, comparing periods</strong> → Grouped Bar &nbsp;|&nbsp; <strong>No</strong> → stay with category charts</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">How many categories?</div>
+      <div class="rule-a"><strong>2–8</strong> → Bar/Column &nbsp;|&nbsp; <strong>8–15</strong> → Horizontal Bar &nbsp;|&nbsp; <strong>15+</strong> → Treemap or Table &nbsp;|&nbsp; <strong>Part-of-whole</strong> → Pie (max 6)</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">Do exact values matter?</div>
+      <div class="rule-a"><strong>Yes</strong> → Bar chart or Table (readers can compare precisely) &nbsp;|&nbsp; <strong>No</strong> → Pie, Treemap, Heatmap are fine</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">Who is the audience?</div>
+      <div class="rule-a"><strong>Executive</strong> → KPI Cards + Line + Bar only &nbsp;|&nbsp; <strong>Analyst</strong> → Scatter, Histogram, Heatmap OK &nbsp;|&nbsp; <strong>Mixed</strong> → default simple</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">What decision follows?</div>
+      <div class="rule-a"><strong>Operational</strong> → KPI cards with RAG status &nbsp;|&nbsp; <strong>Strategic</strong> → Trend + comparison &nbsp;|&nbsp; <strong>Exploratory</strong> → Scatter, Heatmap</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">Two variables to compare?</div>
+      <div class="rule-a"><strong>Both numeric</strong> → Scatter Plot &nbsp;|&nbsp; <strong>Cumulative change</strong> → Waterfall &nbsp;|&nbsp; <strong>One cat + one number</strong> → Bar</div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-q">Magnitude AND composition?</div>
+      <div class="rule-a"><strong>Both matter</strong> → Stacked Bar (comparison) or Stacked Area (over time)</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SECTION 3: COMMON MISTAKES -->
+<div id="mistakes" class="section">
+<div class="wrap">
+  <div class="section-label">Section 03</div>
+  <div class="section-title">8 Mistakes That Kill Dashboards</div>
+  <p class="section-sub">Every one of these makes evaluators cringe. Know them, avoid them.</p>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-title">3D Charts — Never</div>
+      <div class="mistake-text">3D distorts proportions and makes data impossible to read accurately. There is zero valid reason to use 3D charts. Always use flat 2D.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-title">Y-Axis Not Starting at Zero</div>
+      <div class="mistake-text">Truncating the Y-axis makes tiny differences look huge. For bar charts, always start at zero. Line charts can be an exception, but be transparent.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-title">Pie Chart With 10 Slices</div>
+      <div class="mistake-text">Nobody can distinguish 10 wedges. If you have more than 6 categories, group small ones into "Other" or switch to a bar chart or treemap.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-title">Chart Title Describes, Not Tells</div>
+      <div class="mistake-text">"Bar Chart of Sales" = bad. "East Region Leads All Markets in Q1 2024" = good. A title should communicate the insight, not describe the chart type.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-title">Too Many Colours</div>
+      <div class="mistake-text">More than 6 colours = visual noise. Use one colour family. Highlight the key data point in a contrast colour. Grey out everything else.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-title">KPI Without Context</div>
+      <div class="mistake-text">"Revenue: ₹2.4Cr" tells nothing. "₹2.4Cr (+12% vs last month, 84% of target)" tells everything. A number alone is decoration, not information.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-title">Dual Y-Axes</div>
+      <div class="mistake-text">Two Y-axes on one chart confuse almost everyone. Instead of a combo chart, build two separate charts side by side. Simpler is always better.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-title">Unlabelled Axes</div>
+      <div class="mistake-text">Every axis needs a label and unit. "Sales" is not enough — "Sales (₹ Lakhs)" is correct. Every series needs a legend or direct label on the chart.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SECTION 4: CHEAT SHEET -->
+<div id="cheatsheet" class="section">
+<div class="wrap">
+  <div class="section-label">Section 04</div>
+  <div class="section-title">Quick Cheat Sheet</div>
+  <p class="section-sub">Print this. Stick it on your wall. Reference it before every chart you build.</p>
+  <table class="cheat-table">
+    <thead>
+      <tr><th>I want to…</th><th>Use this chart</th><th>Key rule</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="cheat-when">Compare values across categories</td><td class="cheat-chart">BAR / COLUMN</td><td class="cheat-rule">Sort descending. Y-axis from zero.</td></tr>
+      <tr><td class="cheat-when">Show a trend over time</td><td class="cheat-chart">LINE</td><td class="cheat-rule">Time always on X-axis.</td></tr>
+      <tr><td class="cheat-when">Show composition (part of whole)</td><td class="cheat-chart">PIE / DONUT</td><td class="cheat-rule">Max 6 slices. Show percentages.</td></tr>
+      <tr><td class="cheat-when">Show trend + composition over time</td><td class="cheat-chart">STACKED AREA</td><td class="cheat-rule">Max 4 series. Use opacity.</td></tr>
+      <tr><td class="cheat-when">Show correlation between 2 variables</td><td class="cheat-chart">SCATTER PLOT</td><td class="cheat-rule">Add trendline. Label outliers.</td></tr>
+      <tr><td class="cheat-when">Show distribution of data</td><td class="cheat-chart">HISTOGRAM</td><td class="cheat-rule">Bars must touch. Choose bin size carefully.</td></tr>
+      <tr><td class="cheat-when">Spot patterns across 2 dimensions</td><td class="cheat-chart">HEATMAP</td><td class="cheat-rule">Sequential colour scale + legend.</td></tr>
+      <tr><td class="cheat-when">Highlight a single critical number</td><td class="cheat-chart">KPI CARD</td><td class="cheat-rule">Always show vs target or prior period.</td></tr>
+      <tr><td class="cheat-when">Show incremental changes to a total</td><td class="cheat-chart">WATERFALL</td><td class="cheat-rule">Green=add, Red=subtract, Grey=total.</td></tr>
+      <tr><td class="cheat-when">Too many categories for a bar chart</td><td class="cheat-chart">TREEMAP</td><td class="cheat-rule">Area = proportional to value.</td></tr>
+      <tr><td class="cheat-when">Compare 2 categories simultaneously</td><td class="cheat-chart">GROUPED BAR</td><td class="cheat-rule">Max 3–4 groups per cluster.</td></tr>
+      <tr><td class="cheat-when">Audience is executive / non-technical</td><td class="cheat-chart">KPI + LINE + BAR only</td><td class="cheat-rule">One insight per chart. Keep it simple.</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- SECTION 5: TOOLS -->
+<div id="tools" class="section">
+<div class="wrap">
+  <div class="section-label">Section 05</div>
+  <div class="section-title">Tools to Practice</div>
+  <p class="section-sub">Click any tool name or button to go directly to its download or signup page.</p>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name"><a href="https://powerbi.microsoft.com/en-us/downloads/" target="_blank" rel="noopener" class="tool-link">Power BI ↗</a></div>
+      <div class="tool-level">Beginner → Advanced · Most In-Demand</div>
+      <div class="tool-cost">Free (Desktop) · Paid (Pro/Service)</div>
+      <div class="tool-desc">Microsoft's BI tool. Connects to Excel, SQL, Azure, 100+ sources. Most requested tool in Indian data analyst job postings. Essential to know.</div>
+      <div class="tool-links-row"><a href="https://powerbi.microsoft.com/en-us/downloads/" target="_blank" rel="noopener" class="tool-link-btn">⬇ Download Desktop</a><a href="https://app.powerbi.com/" target="_blank" rel="noopener" class="tool-link-btn">🌐 Power BI Web</a><a href="https://learn.microsoft.com/en-us/training/powerplatform/power-bi" target="_blank" rel="noopener" class="tool-link-btn">📖 Learn</a></div>
+      <div class="tool-tip">📌 Download Power BI Desktop free. Build locally, share via Power BI Service.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📈</div>
+      <div class="tool-name"><a href="https://public.tableau.com/app/discover" target="_blank" rel="noopener" class="tool-link">Tableau ↗</a></div>
+      <div class="tool-level">Beginner → Advanced · Best for Storytelling</div>
+      <div class="tool-cost">Free (Tableau Public) · Paid (Desktop)</div>
+      <div class="tool-desc">Industry standard for beautiful, interactive visualisations. Drag-and-drop. Preferred in MNCs for executive dashboards and data storytelling.</div>
+      <div class="tool-links-row"><a href="https://public.tableau.com/app/discover" target="_blank" rel="noopener" class="tool-link-btn">🌐 Tableau Public (Free)</a><a href="https://www.tableau.com/products/desktop/download" target="_blank" rel="noopener" class="tool-link-btn">⬇ Desktop Trial</a></div>
+      <div class="tool-tip">📌 Tableau Public is completely free. Build public dashboards for your portfolio.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔍</div>
+      <div class="tool-name"><a href="https://lookerstudio.google.com/" target="_blank" rel="noopener" class="tool-link">Google Looker Studio ↗</a></div>
+      <div class="tool-level">Beginner → Intermediate · Quickest Start</div>
+      <div class="tool-cost">Completely Free</div>
+      <div class="tool-desc">Browser-based. Connects to Google Sheets, BigQuery, Analytics. Easiest starting point. Share dashboards via URL — no account needed to view.</div>
+      <div class="tool-links-row"><a href="https://lookerstudio.google.com/" target="_blank" rel="noopener" class="tool-link-btn">🌐 Open Looker Studio</a><a href="https://lookerstudio.google.com/gallery" target="_blank" rel="noopener" class="tool-link-btn">🖼 Template Gallery</a></div>
+      <div class="tool-tip">📌 Connect a Google Sheet and build your first dashboard in under 30 minutes.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🗂️</div>
+      <div class="tool-name"><a href="https://www.office.com/launch/excel" target="_blank" rel="noopener" class="tool-link">Excel Online ↗</a></div>
+      <div class="tool-level">Beginner → Intermediate · Interview Staple</div>
+      <div class="tool-cost">Free (Online) · Paid (Microsoft 365)</div>
+      <div class="tool-desc">Most interviews test Excel dashboarding. Pivot Table + Slicers + Charts = functional dashboard in 30 minutes. Must-know for any analyst role.</div>
+      <div class="tool-links-row"><a href="https://www.office.com/launch/excel" target="_blank" rel="noopener" class="tool-link-btn">🌐 Excel Online (Free)</a><a href="https://support.microsoft.com/en-us/office/create-a-pivottable-to-analyze-worksheet-data-a9a84538-bfe9-40a9-a8e9-f99134456576" target="_blank" rel="noopener" class="tool-link-btn">📖 Pivot Table Guide</a></div>
+      <div class="tool-tip">📌 Use Slicer + Pivot Chart combination — this is the #1 Excel interview task.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🐍</div>
+      <div class="tool-name"><a href="https://plotly.com/python/getting-started/" target="_blank" rel="noopener" class="tool-link">Python — Plotly / Seaborn ↗</a></div>
+      <div class="tool-level">Intermediate → Advanced · Code-Driven</div>
+      <div class="tool-cost">Free and Open Source</div>
+      <div class="tool-desc">Custom, reproducible visualisations. Plotly Dash builds full interactive dashboards in Python. Preferred in data science and ML-heavy roles.</div>
+      <div class="tool-links-row"><a href="https://plotly.com/python/getting-started/" target="_blank" rel="noopener" class="tool-link-btn">📖 Plotly Docs</a><a href="https://seaborn.pydata.org/tutorial.html" target="_blank" rel="noopener" class="tool-link-btn">📖 Seaborn Tutorial</a><a href="https://www.kaggle.com/learn/data-visualization" target="_blank" rel="noopener" class="tool-link-btn">🎓 Kaggle Free Course</a></div>
+      <div class="tool-tip">📌 Start with Seaborn for EDA, graduate to Plotly for shareable interactive charts.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🗄️</div>
+      <div class="tool-name"><a href="https://www.metabase.com/" target="_blank" rel="noopener" class="tool-link">Metabase ↗</a></div>
+      <div class="tool-level">Beginner → Intermediate · SQL-First</div>
+      <div class="tool-cost">Free (Open Source) · Paid (Cloud)</div>
+      <div class="tool-desc">Write SQL, get charts instantly. Connects directly to databases. Best for analyst roles in product and startup environments. No-code option also available.</div>
+      <div class="tool-links-row"><a href="https://www.metabase.com/start/oss/" target="_blank" rel="noopener" class="tool-link-btn">⬇ Open Source</a><a href="https://www.metabase.com/demo" target="_blank" rel="noopener" class="tool-link-btn">🖥 Live Demo</a></div>
+      <div class="tool-tip">📌 If your role involves SQL + dashboarding, Metabase is the fastest path.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SECTION 6: RESOURCES -->
+<div id="resources" class="section">
+<div class="wrap">
+  <div class="section-label">Section 06</div>
+  <div class="section-title">YouTube & Learning Resources</div>
+  <p class="section-sub">All links open directly. Click the name to go straight to the channel or course.</p>
+  <div class="resources-grid">
+    <div class="resource-card">
+      <div class="resource-cat">Power BI</div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@GuyInACube" target="_blank" rel="noopener" class="resource-link">Guy in a Cube ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Best Power BI channel. Start with their "Power BI Tutorial for Beginners" playlist. Beginner to advanced.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@PragmaticWorks" target="_blank" rel="noopener" class="resource-link">Pragmatic Works ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Deep-dive Power BI and DAX content. Excellent for data modelling and calculated measures.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://learn.microsoft.com/en-us/training/powerplatform/power-bi" target="_blank" rel="noopener" class="resource-link">Microsoft Learn ↗</a> <span class="resource-badge">Free Course</span></div>
+        <div class="resource-desc">Official learning path. Free, structured, with hands-on practice exercises from Microsoft.</div>
+      </div>
+    </div>
+    <div class="resource-card">
+      <div class="resource-cat">Tableau</div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@TableauTim" target="_blank" rel="noopener" class="resource-link">Tableau Tim ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Best beginner Tableau channel. Clear, step-by-step dashboard walkthroughs. Great for your first month.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@vizwiz" target="_blank" rel="noopener" class="resource-link">Andy Kriebel — VizWiz ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Advanced Tableau techniques and Makeover Monday challenges. For levelling up your skills.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.makeovermonday.co.uk/" target="_blank" rel="noopener" class="resource-link">Makeover Monday ↗</a> <span class="resource-badge">Community</span></div>
+        <div class="resource-desc">Weekly data viz challenge. Best way to build a portfolio of real dashboard work with feedback.</div>
+      </div>
+    </div>
+    <div class="resource-card">
+      <div class="resource-cat">Excel Dashboards</div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@LeilaGharani" target="_blank" rel="noopener" class="resource-link">Leila Gharani ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Best Excel dashboard channel. Pivot Tables, Power Query, dynamic dashboards. Watch before any interview.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://chandoo.org/" target="_blank" rel="noopener" class="resource-link">Chandoo.org ↗</a> <span class="resource-badge">Blog + YouTube</span></div>
+        <div class="resource-desc">500+ free Excel and Power BI tutorials. One of the best free resources on the internet for analysts.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@MyOnlineTrainingHub" target="_blank" rel="noopener" class="resource-link">MyOnlineTrainingHub ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Excellent interactive dashboard walkthroughs. Great for Excel + Power Query combination skills.</div>
+      </div>
+    </div>
+    <div class="resource-card">
+      <div class="resource-cat">Viz Principles</div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@storytellingwithdata" target="_blank" rel="noopener" class="resource-link">Storytelling with Data ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Based on Cole Nussbaumer Knaflic's book. Watch this BEFORE building any dashboard. Changes everything.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.reddit.com/r/dataisbeautiful/" target="_blank" rel="noopener" class="resource-link">r/DataIsBeautiful ↗</a> <span class="resource-badge">Reddit</span></div>
+        <div class="resource-desc">See what good (and bad) data visualisation looks like from the community. Great daily inspiration.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.amazon.in/How-Charts-Lie-Getting-Information/dp/0393358429" target="_blank" rel="noopener" class="resource-link">How Charts Lie — Alberto Cairo ↗</a> <span class="resource-badge">Book</span></div>
+        <div class="resource-desc">Changes how you think about data visualisation and chart interpretation permanently. Highly recommended.</div>
+      </div>
+    </div>
+    <div class="resource-card">
+      <div class="resource-cat">Python Viz</div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@KeithGalli" target="_blank" rel="noopener" class="resource-link">Keith Galli ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Best Python data visualisation playlist. Covers Matplotlib, Seaborn, and Pandas plotting clearly.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@CharmingData" target="_blank" rel="noopener" class="resource-link">Charming Data — Plotly Dash ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Best Plotly Dash channel. Builds full interactive dashboards in Python. Excellent for portfolio work.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.kaggle.com/learn/data-visualization" target="_blank" rel="noopener" class="resource-link">Kaggle Learn — Data Viz ↗</a> <span class="resource-badge">Free Course</span></div>
+        <div class="resource-desc">Free micro-course. Seaborn + Plotly. Structured, hands-on, takes 4–5 hours. Great starting point.</div>
+      </div>
+    </div>
+    <div class="resource-card">
+      <div class="resource-cat">Full DA Learning Path</div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@AlexTheAnalyst" target="_blank" rel="noopener" class="resource-link">Alex The Analyst ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Complete Data Analyst bootcamp. Excel → SQL → Python → Tableau → Power BI. Start here if you're new.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.youtube.com/@LukeBarousse" target="_blank" rel="noopener" class="resource-link">Luke Barousse ↗</a> <span class="resource-badge">YouTube</span></div>
+        <div class="resource-desc">Real-world analyst content — job market, portfolio, SQL, Python. Practical and honest about the industry.</div>
+      </div>
+      <div class="resource-item">
+        <div class="resource-name"><a href="https://www.coursera.org/professional-certificates/google-data-analytics" target="_blank" rel="noopener" class="resource-link">Google DA Certificate ↗</a> <span class="resource-badge">Free Audit</span></div>
+        <div class="resource-desc">Free to audit on Coursera. 6-month structured curriculum covering all core analyst skills from Google.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- SECTION 7: SAMPLE DASHBOARD -->
+<div id="sample-dashboard" class="section" style="padding-bottom:80px;">
+<div class="wrap">
+  <div class="section-label">Section 07</div>
+  <div class="section-title">Sample Dashboard — Practical Example</div>
+  <p class="section-sub">One real business problem. Every chart type applied. Explained why each was chosen.</p>
+
+  <div class="problem-box">
+    <div class="problem-label">🎯 The Business Problem</div>
+    <div class="problem-text">
+      <strong>Company:</strong> RetailCo India — an e-commerce company selling across 4 regions and 3 product categories.<br><br>
+      <strong>Stakeholder ask:</strong> "Our VP of Sales wants a monthly dashboard to answer: <em>How is the business performing overall? Which regions and products are driving growth? Where are we losing customers? How does this month compare to last year?</em>"<br><br>
+      <strong>Data available:</strong> 12 months of orders — Region, Category, Revenue, Orders, Returns, Customer Type, Date.
+    </div>
+  </div>
+
+  <!-- ROW 1: KPI CARDS -->
+  <div class="db-section-label">Row 1 — Top KPIs: What does the VP need to see first?</div>
+  <div class="db-grid db-row-kpi">
+    <div class="kpi-db-card" style="border-top:3px solid #1B4FD8;">
+      <div class="kpi-db-label">Total Revenue</div>
+      <div class="kpi-db-num" style="color:#60A5FA;">₹4.8Cr</div>
+      <div class="kpi-db-change" style="color:#34D399;">▲ +18% vs Last Year</div>
+    </div>
+    <div class="kpi-db-card" style="border-top:3px solid #0D7A5F;">
+      <div class="kpi-db-label">Total Orders</div>
+      <div class="kpi-db-num" style="color:#34D399;">12,840</div>
+      <div class="kpi-db-change" style="color:#34D399;">▲ +11% vs Last Year</div>
+    </div>
+    <div class="kpi-db-card" style="border-top:3px solid #E8A020;">
+      <div class="kpi-db-label">Target Achievement</div>
+      <div class="kpi-db-num" style="color:#FBB040;">87%</div>
+      <div class="kpi-db-change" style="color:#F87171;">▼ Target: ₹5.5Cr</div>
+    </div>
+    <div class="kpi-db-card" style="border-top:3px solid #C4450A;">
+      <div class="kpi-db-label">Return Rate</div>
+      <div class="kpi-db-num" style="color:#F87171;">6.4%</div>
+      <div class="kpi-db-change" style="color:#F87171;">▲ +1.2% vs Last Year</div>
+    </div>
+  </div>
+  <div class="db-why-box" style="margin:12px 0 28px; padding:12px 16px; background:rgba(196,69,10,0.1); border-left:3px solid #C4450A; border-radius:0 6px 6px 0;">
+    <div class="db-why-label">Why KPI Cards here?</div>
+    <div class="db-why-text">The VP has 30 seconds to understand the business health before diving into detail. KPI cards deliver the single most important number per metric — with comparison context (vs target, vs last year). Without comparison, numbers mean nothing. This is always Row 1 of any executive dashboard.</div>
+  </div>
+
+  <!-- ROW 2: LINE + DONUT -->
+  <div class="db-section-label">Row 2 — Trend over time & Revenue mix</div>
+  <div class="db-grid db-row-2">
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Monthly Revenue Trend</div>
+          <div class="db-card-sub">Jan 2024 – Dec 2024 · Electronics vs Clothing vs Home</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(13,122,95,0.2);color:#34D399;">Line Chart</div>
+      </div>
+      <div class="db-canvas-wrap"><canvas id="db-line"></canvas></div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Line Chart?</div>
+        <div class="db-why-text">The question is "how did revenue move over time?" Time is continuous → Line chart. Multiple lines = compare 3 categories across the same 12-month period. Seasonality (Q4 spike) is immediately visible.</div>
+      </div>
+    </div>
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Revenue by Category</div>
+          <div class="db-card-sub">Full year contribution to total ₹4.8Cr</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(196,69,10,0.2);color:#F4A87A;">Donut Chart</div>
+      </div>
+      <div class="db-canvas-wrap"><canvas id="db-donut"></canvas></div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Donut Chart?</div>
+        <div class="db-why-text">The question is "what % of revenue does each category contribute?" That's a part-of-whole question with only 3 slices — perfect for a donut. The centre shows total revenue (₹4.8Cr) as a bonus KPI.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: BAR + GROUPED BAR -->
+  <div class="db-section-label">Row 3 — Regional performance & product comparison</div>
+  <div class="db-grid db-row-2">
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Revenue by Region</div>
+          <div class="db-card-sub">Sorted highest to lowest — FY 2024</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(27,79,216,0.2);color:#60A5FA;">Bar Chart</div>
+      </div>
+      <div class="db-canvas-wrap"><canvas id="db-bar"></canvas></div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Bar Chart?</div>
+        <div class="db-why-text">Comparing 4 discrete regions — classic bar chart scenario. Sorted descending so the eye immediately sees the ranking (South leads, West lags). Time is NOT involved here — it's a category comparison.</div>
+      </div>
+    </div>
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Category Revenue by Region</div>
+          <div class="db-card-sub">Electronics · Clothing · Home across all regions</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(107,53,196,0.2);color:#C084FC;">Grouped Bar</div>
+      </div>
+      <div class="db-canvas-wrap"><canvas id="db-grouped"></canvas></div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Grouped Bar?</div>
+        <div class="db-why-text">Two dimensions simultaneously: Region (4 groups) AND Category (3 bars each). The VP can see not just which region is largest, but which category drives each region. South = Electronics dominant. West = weak across all.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 4: AREA + SCATTER -->
+  <div class="db-section-label">Row 4 — Cumulative growth & correlation insight</div>
+  <div class="db-grid db-row-2">
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Cumulative Revenue by Region Over Time</div>
+          <div class="db-card-sub">Monthly stacked — shows volume AND regional mix</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(13,128,128,0.2);color:#2DD4BF;">Stacked Area</div>
+      </div>
+      <div class="db-canvas-wrap"><canvas id="db-area"></canvas></div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Stacked Area?</div>
+        <div class="db-why-text">Two questions at once: (1) How does total revenue grow over time? (2) How does each region's contribution shift month to month? Stacked area answers both simultaneously. South's area visibly growing = it's scaling faster.</div>
+      </div>
+    </div>
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Orders vs Revenue per Region-Month</div>
+          <div class="db-card-sub">Does more orders always = more revenue?</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(107,53,196,0.2);color:#C084FC;">Scatter Plot</div>
+      </div>
+      <div class="db-canvas-wrap"><canvas id="db-scatter"></canvas></div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Scatter Plot?</div>
+        <div class="db-why-text">Correlation question: "Do regions with more orders generate more revenue?" Scatter reveals the relationship (and outliers). An outlier point = high orders but low revenue could mean returns, discounts, or low-ticket products — a key investigation lead.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: WATERFALL + HEATMAP -->
+  <div class="db-section-label">Row 5 — Revenue bridge & order time patterns</div>
+  <div class="db-grid db-row-2">
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Revenue Bridge: 2023 → 2024</div>
+          <div class="db-card-sub">What drove the ₹74L growth?</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(232,160,32,0.2);color:#FBB040;">Waterfall</div>
+      </div>
+      <div class="db-canvas-wrap"><canvas id="db-waterfall"></canvas></div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Waterfall Chart?</div>
+        <div class="db-why-text">The VP asks "we grew ₹74L — where did that come from?" Waterfall decomposes the growth: new customers added X, price increase added Y, returns cost Z. It's the go-to chart for any "explain the gap" question in finance or sales.</div>
+      </div>
+    </div>
+    <div class="db-card">
+      <div class="db-card-head">
+        <div>
+          <div class="db-card-title">Orders by Day × Time of Day</div>
+          <div class="db-card-sub">When do customers actually buy?</div>
+        </div>
+        <div class="db-why-badge" style="background:rgba(196,69,10,0.2);color:#F4A87A;">Heatmap</div>
+      </div>
+      <div class="db-canvas-wrap">
+        <div id="db-heatmap" style="height:210px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+      <div class="db-why-box">
+        <div class="db-why-label">Why a Heatmap?</div>
+        <div class="db-why-text">Two categorical dimensions — Day of Week × Time of Day — and we need to spot the hot zones instantly. Colour intensity makes Friday 8–10pm (peak ordering time) obvious at a glance. A bar chart for this would need 56 bars — unreadable.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SUMMARY -->
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:28px 32px;margin-top:36px;">
+    <div style="font-family:var(--mono);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px;">Dashboard Design Decisions — Summary</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="color:rgba(255,255,255,0.85);font-size:13.5px;line-height:1.7;">
+          <strong style="color:#fff;">Row 1 — KPI Cards:</strong> Executive summary. One number per metric, always with context.<br>
+          <strong style="color:#fff;">Row 2 — Line + Donut:</strong> Trend over time (line) + composition (donut). Two different angles on the same revenue data.<br>
+          <strong style="color:#fff;">Row 3 — Bar + Grouped Bar:</strong> Regional ranking (bar) + two-dimension breakdown (grouped).<br>
+        </div>
+      </div>
+      <div>
+        <div style="color:rgba(255,255,255,0.85);font-size:13.5px;line-height:1.7;">
+          <strong style="color:#fff;">Row 4 — Area + Scatter:</strong> Cumulative growth view (area) + analytical correlation question (scatter).<br>
+          <strong style="color:#fff;">Row 5 — Waterfall + Heatmap:</strong> Explain the change (waterfall) + reveal hidden time patterns (heatmap).<br>
+          <strong style="color:#fff;">Key principle:</strong> Every chart answers one specific question. No chart is decorative.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="footer">
+  DASHBOARDING GUIDE · DATA ANALYST SERIES · CHART SELECTION RULEBOOK
+</div>
+
+<script>
+// ── CHART.JS DEFAULTS ─────────────────────────────────────────────────────────
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = "#4A4035";
+Chart.defaults.plugins.legend.labels.boxWidth = 12;
+Chart.defaults.plugins.legend.labels.padding = 16;
+
+const COLORS = {
+  blue:   '#1B4FD8', blueA: 'rgba(27,79,216,0.15)',
+  green:  '#0D7A5F', greenA:'rgba(13,122,95,0.15)',
+  orange: '#C4450A', orangeA:'rgba(196,69,10,0.15)',
+  yellow: '#E8A020', yellowA:'rgba(232,160,32,0.15)',
+  purple: '#6B35C4', purpleA:'rgba(107,53,196,0.15)',
+  teal:   '#0D8080', tealA:  'rgba(13,128,128,0.15)',
+  gray:   '#8A7E72',
+};
+
+// ── 1. BAR CHART ──────────────────────────────────────────────────────────────
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: ['East', 'North', 'South', 'West'],
+    datasets: [{
+      label: 'Total Sales (₹)',
+      data: [2600, 1800, 1700, 1200],
+      backgroundColor: [COLORS.blue, COLORS.blueA.replace('0.15','0.6'), COLORS.blueA.replace('0.15','0.4'), COLORS.gray+'66'],
+      borderColor: [COLORS.blue, COLORS.blue, COLORS.blue, COLORS.gray],
+      borderWidth: 1.5, borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `₹ ${ctx.parsed.y.toLocaleString()}` } }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#E2DDD6' },
+           ticks: { callback: v => '₹'+v.toLocaleString() } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 2. LINE CHART ─────────────────────────────────────────────────────────────
+new Chart(document.getElementById('lineChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets: [
+      { label: 'Product A', data: [420,390,510,480,520,610,590,640,700,720,810,920],
+        borderColor: COLORS.blue, backgroundColor: COLORS.blueA,
+        tension: 0.35, fill: false, pointRadius: 3, borderWidth: 2 },
+      { label: 'Product B', data: [280,310,350,380,420,400,450,490,530,580,620,700],
+        borderColor: COLORS.orange, backgroundColor: COLORS.orangeA,
+        tension: 0.35, fill: false, pointRadius: 3, borderWidth: 2, borderDash: [5,3] },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' },
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ₹${ctx.parsed.y.toLocaleString()}` } }
+    },
+    scales: {
+      y: { beginAtZero: false, grid: { color: '#E2DDD6' },
+           ticks: { callback: v => '₹'+v } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 3. PIE CHART ──────────────────────────────────────────────────────────────
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Electronics', 'Software', 'Furniture', 'Services', 'Other'],
+    datasets: [{
+      data: [38, 27, 18, 12, 5],
+      backgroundColor: [COLORS.blue, COLORS.green, COLORS.orange, COLORS.purple, COLORS.gray],
+      borderWidth: 2, borderColor: '#fff',
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: {
+      legend: { position: 'right' },
+      tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed}%` } }
+    }
+  }
+});
+
+// ── 4. SCATTER CHART ──────────────────────────────────────────────────────────
+const scatterData = [
+  {x:20,y:480},{x:35,y:620},{x:50,y:750},{x:15,y:320},{x:70,y:950},
+  {x:45,y:680},{x:60,y:820},{x:25,y:410},{x:80,y:1100},{x:55,y:790},
+  {x:30,y:520},{x:65,y:890},{x:10,y:250},{x:40,y:640},{x:90,y:1250}
+];
+new Chart(document.getElementById('scatterChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [{
+      label: 'Campaigns',
+      data: scatterData,
+      backgroundColor: COLORS.purple+'99',
+      borderColor: COLORS.purple,
+      pointRadius: 6, pointHoverRadius: 8,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: {
+        label: ctx => `Ad Spend: ₹${ctx.parsed.x}K → Revenue: ₹${ctx.parsed.y}K`
+      }}
+    },
+    scales: {
+      x: { title: { display: true, text: 'Ad Spend (₹ Thousands)' }, grid: { color: '#E2DDD6' } },
+      y: { title: { display: true, text: 'Revenue (₹ Thousands)' }, beginAtZero: true, grid: { color: '#E2DDD6' } }
+    }
+  }
+});
+
+// ── 5. AREA CHART (STACKED) ───────────────────────────────────────────────────
+new Chart(document.getElementById('areaChart'), {
+  type: 'line',
+  data: {
+    labels: ['Q1-22','Q2-22','Q3-22','Q4-22','Q1-23','Q2-23','Q3-23','Q4-23'],
+    datasets: [
+      { label: 'North', data: [180,210,230,260,290,320,350,380],
+        borderColor: COLORS.blue, backgroundColor: COLORS.blueA,
+        fill: true, tension: 0.3, borderWidth: 1.5 },
+      { label: 'South', data: [140,160,150,180,200,220,240,260],
+        borderColor: COLORS.green, backgroundColor: COLORS.greenA,
+        fill: true, tension: 0.3, borderWidth: 1.5 },
+      { label: 'East', data: [200,240,270,300,330,370,410,450],
+        borderColor: COLORS.orange, backgroundColor: COLORS.orangeA,
+        fill: true, tension: 0.3, borderWidth: 1.5 },
+      { label: 'West', data: [100,120,130,150,160,180,190,210],
+        borderColor: COLORS.yellow, backgroundColor: COLORS.yellowA,
+        fill: true, tension: 0.3, borderWidth: 1.5 },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { stacked: true, grid: { color: '#E2DDD6' }, ticks: { callback: v => '₹'+v } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 6. HEATMAP (custom SVG) ───────────────────────────────────────────────────
+(function() {
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const hours = ['9am','11am','1pm','3pm','5pm','7pm'];
+  const vals = [
+    [12,18,25,30,22,15,8],[20,35,42,38,28,18,10],
+    [15,28,45,50,35,20,12],[18,32,40,55,38,25,14],
+    [22,38,35,42,30,18,10],[8,14,20,25,18,10,6]
+  ];
+  const maxV = 55;
+  const cellW = 36, cellH = 30, pad = 36;
+  const svgW = days.length * cellW + pad + 20;
+  const svgH = hours.length * cellH + pad + 10;
+
+  let svg = `<svg width="100%" viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',sans-serif;">`;
+
+  // axis labels
+  days.forEach((d,i) => {
+    svg += `<text x="${pad + i*cellW + cellW/2}" y="14" text-anchor="middle" font-size="10" fill="#4A4035">${d}</text>`;
+  });
+  hours.forEach((h,j) => {
+    svg += `<text x="${pad-4}" y="${pad + j*cellH + cellH/2 + 4}" text-anchor="end" font-size="10" fill="#4A4035">${h}</text>`;
+  });
+
+  // cells
+  vals.forEach((row, j) => {
+    row.forEach((v, i) => {
+      const t = v / maxV;
+      const r = Math.round(27 + t*(196-27));
+      const g = Math.round(79 + t*(69-79));
+      const b = Math.round(216 + t*(10-216));
+      const fill = `rgb(${r},${g},${b})`;
+      const textColor = t > 0.5 ? '#fff' : '#1A1208';
+      svg += `<rect x="${pad+i*cellW+1}" y="${pad+j*cellH+1}" width="${cellW-2}" height="${cellH-2}" fill="${fill}" rx="3"/>`;
+      svg += `<text x="${pad+i*cellW+cellW/2}" y="${pad+j*cellH+cellH/2+4}" text-anchor="middle" font-size="9" fill="${textColor}">${v}</text>`;
+    });
+  });
+
+  svg += `</svg>`;
+  document.getElementById('heatmapChart').innerHTML = svg;
+})();
+
+// ── 8. WATERFALL CHART ────────────────────────────────────────────────────────
+(function() {
+  const labels = ['Start', 'New Clients', 'Upsells', 'Refunds', 'Churn', 'End'];
+  const changes = [0, 420, 180, -90, -60, 0];
+  const values  = [800, 420, 180, -90, -60, 0];
+  const running = [800, 1220, 1400, 1310, 1250, 1250];
+  const bases   = [0,    800, 1220, 1310, 1250, 0];
+  const colors  = ['#1B4FD8','#0D7A5F','#0D7A5F','#C4450A','#C4450A','#1B4FD8'];
+
+  new Chart(document.getElementById('waterfallChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Base', data: [0, 800, 1220, 1310, 1250, 0],
+          backgroundColor: 'transparent', borderColor: 'transparent' },
+        { label: 'Value', data: [800, 420, 180, 90, 60, 1250],
+          backgroundColor: colors, borderRadius: 3, borderWidth: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              if (ctx.datasetIndex === 0) return null;
+              const v = changes[ctx.dataIndex];
+              if (v === 0) return `Total: ₹${running[ctx.dataIndex]}`;
+              return v > 0 ? `+₹${v}` : `-₹${Math.abs(v)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, beginAtZero: true, grid: { color: '#E2DDD6' },
+             ticks: { callback: v => '₹'+v } }
+      }
+    }
+  });
+})();
+
+// ── 9. HISTOGRAM ──────────────────────────────────────────────────────────────
+new Chart(document.getElementById('histogramChart'), {
+  type: 'bar',
+  data: {
+    labels: ['₹0-1K','₹1-2K','₹2-3K','₹3-5K','₹5-8K','₹8-12K','₹12K+'],
+    datasets: [{
+      label: 'Number of Orders',
+      data: [8, 24, 38, 52, 35, 18, 7],
+      backgroundColor: COLORS.teal+'CC',
+      borderColor: COLORS.teal,
+      borderWidth: 1,
+      borderRadius: 0, // no gap = histogram
+      barPercentage: 1.0, categoryPercentage: 1.0, // BARS TOUCH
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#E2DDD6' }, title: { display: true, text: 'Frequency' } },
+      x: { grid: { display: false }, title: { display: true, text: 'Order Value Range' } }
+    }
+  }
+});
+
+// ── 10. GROUPED BAR ───────────────────────────────────────────────────────────
+new Chart(document.getElementById('groupedChart'), {
+  type: 'bar',
+  data: {
+    labels: ['North','South','East','West'],
+    datasets: [
+      { label: 'Product A', data: [1200,900,1500,700],
+        backgroundColor: COLORS.blue+'CC', borderColor: COLORS.blue, borderWidth:1.5, borderRadius:3 },
+      { label: 'Product B', data: [600,800,1100,500],
+        backgroundColor: COLORS.orange+'CC', borderColor: COLORS.orange, borderWidth:1.5, borderRadius:3 },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#E2DDD6' }, ticks: { callback: v => '₹'+v } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ── NAV ACTIVE STATE ──────────────────────────────────────────────────────────
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#'+cur);
+  });
+}, { passive: true });
+
+// ── SAMPLE DASHBOARD CHARTS ───────────────────────────────────────────────────
+
+// DB LINE CHART — Monthly Revenue by Category
+new Chart(document.getElementById('db-line'), {
+  type: 'line',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets: [
+      { label:'Electronics', data:[28,32,35,31,38,42,45,48,52,60,72,88],
+        borderColor:'#60A5FA', backgroundColor:'rgba(96,165,250,0.08)',
+        tension:0.35, fill:true, borderWidth:2, pointRadius:2 },
+      { label:'Clothing', data:[18,22,25,28,30,26,24,28,32,38,48,56],
+        borderColor:'#34D399', backgroundColor:'rgba(52,211,153,0.08)',
+        tension:0.35, fill:true, borderWidth:2, pointRadius:2 },
+      { label:'Home', data:[12,14,16,18,15,18,20,22,24,26,30,36],
+        borderColor:'#F4A87A', backgroundColor:'rgba(244,168,122,0.08)',
+        tension:0.35, fill:true, borderWidth:2, pointRadius:2 },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'top', labels:{ color:'#94A3B8', boxWidth:10 } } },
+    scales:{
+      y:{ beginAtZero:false, grid:{ color:'rgba(255,255,255,0.06)' },
+          ticks:{ color:'#64748B', callback:v=>'₹'+v+'L' } },
+      x:{ grid:{ display:false }, ticks:{ color:'#64748B' } }
+    }
+  }
+});
+
+// DB DONUT CHART — Revenue by Category
+new Chart(document.getElementById('db-donut'), {
+  type:'doughnut',
+  data:{
+    labels:['Electronics','Clothing','Home & Décor'],
+    datasets:[{ data:[52,30,18],
+      backgroundColor:['#1B4FD8','#0D7A5F','#E8A020'],
+      borderColor:'#1A2235', borderWidth:3 }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, cutout:'62%',
+    plugins:{
+      legend:{ position:'right', labels:{ color:'#94A3B8', boxWidth:10 } },
+      tooltip:{ callbacks:{ label:ctx=>`${ctx.label}: ${ctx.parsed}%` } }
+    }
+  }
+});
+
+// DB BAR CHART — Revenue by Region
+new Chart(document.getElementById('db-bar'), {
+  type:'bar',
+  data:{
+    labels:['South','North','East','West'],
+    datasets:[{ label:'Revenue (₹ Lakhs)',
+      data:[148,132,116,84],
+      backgroundColor:['#1B4FD8','rgba(96,165,250,0.6)','rgba(96,165,250,0.4)','rgba(96,165,250,0.2)'],
+      borderColor:['#1B4FD8','#60A5FA','#60A5FA','#60A5FA'],
+      borderWidth:1.5, borderRadius:4 }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, indexAxis:'y',
+    plugins:{ legend:{ display:false } },
+    scales:{
+      x:{ beginAtZero:true, grid:{ color:'rgba(255,255,255,0.06)' },
+          ticks:{ color:'#64748B', callback:v=>'₹'+v+'L' } },
+      y:{ grid:{ display:false }, ticks:{ color:'#94A3B8' } }
+    }
+  }
+});
+
+// DB GROUPED BAR — Category by Region
+new Chart(document.getElementById('db-grouped'), {
+  type:'bar',
+  data:{
+    labels:['South','North','East','West'],
+    datasets:[
+      { label:'Electronics', data:[82,70,58,38],
+        backgroundColor:'#1B4FD8', borderRadius:3, borderWidth:0 },
+      { label:'Clothing', data:[42,38,36,26],
+        backgroundColor:'#0D7A5F', borderRadius:3, borderWidth:0 },
+      { label:'Home', data:[24,24,22,20],
+        backgroundColor:'#E8A020', borderRadius:3, borderWidth:0 },
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'top', labels:{ color:'#94A3B8', boxWidth:10 } } },
+    scales:{
+      y:{ beginAtZero:true, stacked:false,
+          grid:{ color:'rgba(255,255,255,0.06)' },
+          ticks:{ color:'#64748B', callback:v=>'₹'+v+'L' } },
+      x:{ grid:{ display:false }, ticks:{ color:'#94A3B8' } }
+    }
+  }
+});
+
+// DB AREA CHART — Cumulative by Region
+new Chart(document.getElementById('db-area'), {
+  type:'line',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets:[
+      { label:'South', data:[10,20,32,44,57,68,82,96,111,124,138,148],
+        borderColor:'#1B4FD8', backgroundColor:'rgba(27,79,216,0.25)',
+        fill:true, tension:0.3, borderWidth:1.5 },
+      { label:'North', data:[9,18,28,39,51,62,74,86,99,110,122,132],
+        borderColor:'#0D7A5F', backgroundColor:'rgba(13,122,95,0.2)',
+        fill:true, tension:0.3, borderWidth:1.5 },
+      { label:'East', data:[8,16,25,34,44,53,64,74,84,96,107,116],
+        borderColor:'#E8A020', backgroundColor:'rgba(232,160,32,0.15)',
+        fill:true, tension:0.3, borderWidth:1.5 },
+      { label:'West', data:[6,12,18,26,34,42,50,58,66,72,78,84],
+        borderColor:'#6B35C4', backgroundColor:'rgba(107,53,196,0.12)',
+        fill:true, tension:0.3, borderWidth:1.5 },
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'top', labels:{ color:'#94A3B8', boxWidth:10 } } },
+    scales:{
+      y:{ grid:{ color:'rgba(255,255,255,0.06)' },
+          ticks:{ color:'#64748B', callback:v=>'₹'+v+'L' } },
+      x:{ grid:{ display:false }, ticks:{ color:'#94A3B8' } }
+    }
+  }
+});
+
+// DB SCATTER — Orders vs Revenue
+new Chart(document.getElementById('db-scatter'), {
+  type:'scatter',
+  data:{
+    datasets:[
+      { label:'South', data:[{x:1240,y:148},{x:980,y:118},{x:1100,y:135}],
+        backgroundColor:'#1B4FD8', pointRadius:7, pointHoverRadius:9 },
+      { label:'North', data:[{x:1020,y:132},{x:880,y:108},{x:960,y:120}],
+        backgroundColor:'#0D7A5F', pointRadius:7, pointHoverRadius:9 },
+      { label:'East', data:[{x:900,y:116},{x:780,y:98},{x:840,y:108}],
+        backgroundColor:'#E8A020', pointRadius:7, pointHoverRadius:9 },
+      { label:'West (outlier)', data:[{x:820,y:84},{x:680,y:68},{x:920,y:72}],
+        backgroundColor:'#C4450A', pointRadius:7, pointHoverRadius:9 },
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'top', labels:{ color:'#94A3B8', boxWidth:10 } },
+      tooltip:{ callbacks:{ label:ctx=>`Orders: ${ctx.parsed.x} → ₹${ctx.parsed.y}L` } }
+    },
+    scales:{
+      x:{ title:{ display:true, text:'Orders', color:'#64748B' },
+          grid:{ color:'rgba(255,255,255,0.06)' }, ticks:{ color:'#64748B' } },
+      y:{ title:{ display:true, text:'Revenue (₹L)', color:'#64748B' },
+          grid:{ color:'rgba(255,255,255,0.06)' }, ticks:{ color:'#64748B' } }
+    }
+  }
+});
+
+// DB WATERFALL — Revenue Bridge
+(function(){
+  const labels = ['FY 2023','New Customers','Upsell/Cross-sell','Price Increase','Returns','Churn','FY 2024'];
+  const bases =  [0,        406,            486,                546,              596,      564,    0      ];
+  const bars =   [406,      80,             60,                 50,               -32,      -30,    480    ];
+  const colors = ['#1B4FD8','#34D399','#34D399','#34D399','#F87171','#F87171','#1B4FD8'];
+
+  new Chart(document.getElementById('db-waterfall'), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        { label:'Base', data:bases, backgroundColor:'transparent', borderColor:'transparent' },
+        { label:'Value', data:bars.map(v=>Math.abs(v)),
+          backgroundColor:colors, borderRadius:3, borderWidth:0 }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{ label:(ctx)=>{
+          if(ctx.datasetIndex===0) return null;
+          const v = bars[ctx.dataIndex];
+          if(ctx.dataIndex===0||ctx.dataIndex===6) return `₹${Math.abs(v)}Cr`;
+          return v>0?`+₹${v}L`:` -₹${Math.abs(v)}L`;
+        }}}
+      },
+      scales:{
+        x:{ stacked:true, grid:{ display:false }, ticks:{ color:'#94A3B8', font:{size:10} } },
+        y:{ stacked:true, beginAtZero:true,
+            grid:{ color:'rgba(255,255,255,0.06)' },
+            ticks:{ color:'#64748B', callback:v=>v<100?'₹'+v+'L':'₹'+v/100+'Cr' } }
+      }
+    }
+  });
+})();
+
+// DB HEATMAP — Orders by Day × Hour
+(function(){
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const slots = ['8-10am','10-12pm','12-2pm','2-4pm','4-6pm','6-8pm','8-10pm'];
+  const data = [
+    [12,18,22,20,16,14,10],[15,20,28,24,19,17,12],
+    [10,16,24,22,18,15,11],[14,19,26,25,20,18,13],
+    [20,28,35,32,28,38,48],[8,12,18,20,16,30,42],
+    [5,8,14,16,12,22,32]
+  ];
+  const maxV = 48;
+  const cW=46, cH=24, padL=54, padT=28;
+  const svgW = days.length*cW+padL+10;
+  const svgH = slots.length*cH+padT+8;
+
+  let svg = `<svg width="100%" viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="font-family:'DM Sans',sans-serif;">`;
+
+  days.forEach((d,i)=>{
+    svg+=`<text x="${padL+i*cW+cW/2}" y="16" text-anchor="middle" font-size="9.5" fill="#64748B">${d}</text>`;
+  });
+  slots.forEach((s,j)=>{
+    svg+=`<text x="${padL-4}" y="${padT+j*cH+cH/2+4}" text-anchor="end" font-size="9" fill="#64748B">${s}</text>`;
+  });
+
+  data.forEach((row,j)=>{
+    row.forEach((v,i)=>{
+      const t=v/maxV;
+      // Dark blue to bright orange gradient for dark bg
+      const r=Math.round(27+t*(248-27));
+      const g=Math.round(79+t*(160-79));
+      const b=Math.round(216+t*(32-216));
+      const fill=`rgb(${r},${g},${b})`;
+      const tc=t>0.55?'#1A1208':'rgba(255,255,255,0.7)';
+      svg+=`<rect x="${padL+i*cW+1}" y="${padT+j*cH+1}" width="${cW-2}" height="${cH-2}" fill="${fill}" rx="3" opacity="0.9"/>`;
+      svg+=`<text x="${padL+i*cW+cW/2}" y="${padT+j*cH+cH/2+4}" text-anchor="middle" font-size="8" fill="${tc}">${v}</text>`;
+    });
+  });
+  svg+=`</svg>`;
+  document.getElementById('db-heatmap').innerHTML=svg;
+})();
+
+</script>
+</body>
+</html>
