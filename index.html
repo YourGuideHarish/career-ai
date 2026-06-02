@@ -877,6 +877,26 @@ resourceBtn.onclick = async () => {
 
           try{
             await window.googleLogin();
+            if(tool.mode === 'embed'){
+
+const ea = document.getElementById(`ea-${tab.id}-${idx}`);
+
+if(ea){
+ea.classList.add('open');
+
+ea.scrollIntoView({
+  behavior:'smooth',
+  block:'nearest'
+});
+
+}
+
+} else {
+
+window.open(tool.link,'_blank');
+
+}
+
 
               document.getElementById('logout-btn').style.display = 'inline-flex';
 
@@ -890,12 +910,12 @@ resourceBtn.onclick = async () => {
               if(ea){
               ea.classList.toggle('open');
 
-              ```
+              
               ea.scrollIntoView({
                 behavior:'smooth',
                 block:'nearest'
               });
-              ```
+              
 
               }
 
@@ -1045,8 +1065,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
 getFirestore,
-collection,
-addDoc
+doc,
+setDoc,
+increment
+
+
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1079,38 +1102,102 @@ window.googleLogin = async function(){
 
 const user = result.user;
 
-await addDoc(collection(db, "users"), {
+await setDoc(
+doc(db, "users", user.uid),
+{
 name: user.displayName,
 email: user.email,
 uid: user.uid,
-createdAt: new Date()
-});
+photo: user.photoURL,
+lastLogin: new Date(),
+sessionCount: increment(1)
+},
+{ merge: true }
+);
+
 
 console.log("Firestore Save Success");
 
 window.isLoggedIn = true;
-
 document.querySelector('.nav-right').innerHTML = `
 
   <div style="
+    position:relative;
+  ">
+
+<div 
+  onclick="
+    const menu = document.getElementById('user-menu');
+    menu.style.display = menu.style.display === 'block'
+      ? 'none'
+      : 'block';
+  "
+  style="
     display:flex;
     align-items:center;
     gap:10px;
     color:white;
     font-size:14px;
     font-weight:600;
-  ">
-    <img 
-      src="${user.photoURL}" 
-      style="
-        width:34px;
-        height:34px;
-        border-radius:50%;
-      "
-    >
-    <span>Hi, ${user.displayName.split(' ')[0]} 👋</span>
+    cursor:pointer;
+  "
+>
+  <img 
+    src="${user.photoURL}" 
+    style="
+      width:34px;
+      height:34px;
+      border-radius:50%;
+    "
+  >
+
+  <span>
+    ${user.displayName.split(' ')[0]} ⌄
+  </span>
+</div>
+
+<div 
+  id="user-menu"
+  style="
+    display:none;
+    position:absolute;
+    top:45px;
+    right:0;
+    background:#12122A;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    min-width:180px;
+    overflow:hidden;
+    z-index:999;
+  "
+>
+
+  <div 
+    onclick='googleLogin()'
+    style="
+      padding:12px 14px;
+      cursor:pointer;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    "
+  >
+    Change Account
+  </div>
+
+  <div 
+    onclick='logoutUser()'
+    style="
+      padding:12px 14px;
+      cursor:pointer;
+    "
+  >
+    Logout
+  </div>
+
+</div>
+
   </div>
 `;
+
 
 console.log(user);
       
@@ -1124,17 +1211,22 @@ console.log(user);
 }
 window.logoutUser = async function(){
 
-  await signOut(auth);
+await signOut(auth);
 
-  window.isLoggedIn = false;
+window.isLoggedIn = false;
 
-  document.getElementById('login-btn').innerHTML = `
-    Login with Google
-  `;
+document.querySelector('.nav-right').innerHTML = ` <a class="nav-link" href="#tools">Tools</a> <a class="nav-link" href="#how">How it works</a> <a class="nav-link" id="nav-port" target="_blank">Portfolio ↗</a>
 
-  document.getElementById('logout-btn').style.display = 'none';
+<button class="btn-nav" id="login-btn" onclick="googleLogin()">
+  Login with Google
+</button>
+
+`;
+
+document.getElementById('nav-port').href = CONFIG.portfolio;
 
 }
+
 
 </script>
 </body>
