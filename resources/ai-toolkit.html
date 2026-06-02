@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Toolkit — Your Guide Harish</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #f0f0f5;
+  --ink2: #cccce0;
+  --muted: #8888a0;
+  --paper: #0a0a0f;
+  --surface: #13131a;
+  --surface2: #1c1c26;
+  --accent: #ff4d6d;
+  --accent2: #7c6fff;
+  --accent3: #00e5a0;
+  --accent4: #ffb347;
+  --accent5: #4fc3f7;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --r: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NOISE TEXTURE */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,111,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,111,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+/* HERO */
+.hero {
+  padding: 4rem 0 3rem;
+  border-bottom: 0.5px solid var(--border2);
+  margin-bottom: 3rem;
+  animation: fadeUp 0.7s ease both;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  color: var(--ink);
+  border: 0.5px solid var(--border2);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.hero-tag span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+.hero h1 em { font-style: normal; color: var(--accent2); }
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 2rem;
+}
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.stat { display: flex; flex-direction: column; }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent2); letter-spacing: -0.02em; }
+.stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+/* FILTER TABS */
+.filter-wrap {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.7s 0.1s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+.filter-btn {
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border: 0.5px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn:hover { border-color: var(--accent2); color: var(--ink); }
+.filter-btn.active { background: var(--ink); color: var(--ink); border-color: var(--ink); }
+
+/* SEARCH */
+.search-wrap {
+  position: relative;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.7s 0.15s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+.search-input {
+  width: 100%;
+  padding: 14px 20px 14px 48px;
+  border: 0.5px solid var(--border2);
+  border-radius: var(--r);
+  background: var(--surface);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  color-scheme: dark;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--accent2); background: var(--surface2); }
+.search-input::placeholder { color: var(--muted); }
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  margin-top: 2.5rem;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.section-count {
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--surface2);
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* CARD */
+.card {
+  background: #13131a;
+  border: 0.5px solid var(--border2);
+  border-radius: var(--r);
+  padding: 1.25rem;
+  transition: all 0.2s;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.5s ease both;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--r) var(--r) 0 0;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(15,14,23,0.08); border-color: rgba(15,14,23,0.2); }
+.card.hidden { display: none; }
+
+/* Category colors */
+.card[data-cat="content"]::before { background: var(--accent); }
+.card[data-cat="docs"]::before { background: var(--accent2); }
+.card[data-cat="code"]::before { background: var(--accent5); }
+.card[data-cat="research"]::before { background: var(--accent3); }
+.card[data-cat="productivity"]::before { background: var(--accent4); }
+.card[data-cat="learning"]::before { background: #ec4899; }
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.card-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.card-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+
+.card-tool {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.card-usecase {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.card-desc {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.card-how {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+.card-how strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent2);
+  text-decoration: none;
+  transition: gap 0.2s;
+}
+.card-link:hover { gap: 8px; }
+
+/* Badge colors per category */
+.badge-content { color: var(--accent); border-color: rgba(255,77,109,0.3); background: rgba(255,77,109,0.06); }
+.badge-docs { color: var(--accent2); border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.06); }
+.badge-code { color: var(--accent5); border-color: rgba(2,132,199,0.3); background: rgba(2,132,199,0.06); }
+.badge-research { color: var(--accent3); border-color: rgba(5,150,105,0.3); background: rgba(5,150,105,0.06); }
+.badge-productivity { color: var(--accent4); border-color: rgba(217,119,6,0.3); background: rgba(217,119,6,0.06); }
+.badge-learning { color: #ec4899; border-color: rgba(236,72,153,0.3); background: rgba(236,72,153,0.06); }
+
+/* Icon bg colors */
+.icon-content { background: rgba(255,77,109,0.15); }
+.icon-docs { background: rgba(124,111,255,0.15); }
+.icon-code { background: rgba(79,195,247,0.15); }
+.icon-research { background: rgba(0,229,160,0.15); }
+.icon-productivity { background: rgba(255,179,71,0.15); }
+.icon-learning { background: rgba(236,72,153,0.15); }
+
+/* PROMPT BOX */
+.prompt-section {
+  margin-top: 4rem;
+  padding: 2rem;
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--r);
+  animation: fadeUp 0.7s ease both;
+}
+.prompt-section h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--paper);
+  margin-bottom: 0.5rem;
+}
+.prompt-section p { font-size: 14px; color: rgba(250,250,248,0.6); margin-bottom: 1.5rem; }
+.prompts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.prompt-card {
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  padding: 14px;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.prompt-card:hover { background: rgba(255,255,255,0.1); }
+.prompt-tool { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin-bottom: 6px; }
+.prompt-text { font-size: 13px; color: var(--paper); line-height: 1.6; font-style: italic; }
+.prompt-copy { font-size: 11px; color: rgba(250,250,248,0.4); margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+.copied { color: #34d399 !important; }
+
+/* FOOTER */
+.footer-bar {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 0.5px solid var(--border2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: gap;
+  gap: 1rem;
+}
+.footer-brand { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
+.footer-note { font-size: 13px; color: var(--muted); }
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 3rem; color: var(--muted); display: none; }
+.empty.show { display: block; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 0 2rem; }
+  .hero-stats { gap: 1.5rem; }
+  .grid { grid-template-columns: 1fr; }
+  .prompts-grid { grid-template-columns: 1fr; }
+  .footer-bar { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag"><span></span>Your Guide Harish</div>
+    <h1>The <em>AI Toolkit</em><br>for Early Professionals</h1>
+    <p class="hero-sub">Every AI tool I use — what it does, when to use it, and exactly how to get results. Sorted by use case so you find what you need instantly.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">30+</span><span class="stat-label">AI Tools</span></div>
+      <div class="stat"><span class="stat-num">6</span><span class="stat-label">Use Case Categories</span></div>
+      <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Free to Start</span></div>
+    </div>
+  </div>
+
+  <!-- SEARCH + FILTER -->
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search tools, use cases, categories...">
+  </div>
+
+  <div class="filter-wrap">
+    <button class="filter-btn active" data-filter="all">All Tools</button>
+    <button class="filter-btn" data-filter="content">🎨 Content</button>
+    <button class="filter-btn" data-filter="docs">📄 Docs & Writing</button>
+    <button class="filter-btn" data-filter="code">💻 Code & Web</button>
+    <button class="filter-btn" data-filter="research">🔍 Research</button>
+    <button class="filter-btn" data-filter="productivity">⚡ Productivity</button>
+    <button class="filter-btn" data-filter="learning">🎓 Learning</button>
+  </div>
+
+  <div class="empty" id="emptyState">No tools found for that search. Try a different keyword.</div>
+
+  <!-- CARDS -->
+  <div class="grid" id="toolsGrid"></div>
+
+  <!-- PROMPT VAULT -->
+  <div class="prompt-section">
+    <h2>⚡ Prompt Vault</h2>
+    <p>Copy these exact prompts. Paste into the tool. Get results in seconds.</p>
+    <div class="prompts-grid" id="promptsGrid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <div class="footer-brand">Your Guide Harish</div>
+    <div class="footer-note">Share with someone who still does everything manually 😄</div>
+  </div>
+
+</div>
+
+<script>
+const tools = [
+  // CONTENT
+  {
+    cat: 'content', icon: '🎨', tool: 'Canva AI', usecase: 'Carousels & Images',
+    desc: 'Design Instagram carousels, thumbnails, posters and presentations using AI-generated layouts. Best for non-designers who want professional output fast.',
+    how: 'Open Canva → Create design → Use "Magic Design" or "Text to Image". Describe what you want and AI generates the layout. Edit text and colors to match your brand.',
+    link: 'canva.com', free: true
+  },
+  {
+    cat: 'content', icon: '🎬', tool: 'CapCut AI', usecase: 'Reels Editing',
+    desc: 'Auto-captions, silence removal, B-roll suggestions and viral cuts — all AI powered. Most Indian Reels creators use this.',
+    how: 'Upload your video → Auto Captions → Edit → Remove silences → Add B-roll from stock library → Export 1080p. Total editing time under 10 minutes.',
+    link: 'capcut.com', free: true
+  },
+  {
+    cat: 'content', icon: '✍️', tool: 'Claude AI', usecase: 'Scripts & Long-form',
+    desc: 'Best AI for writing scripts, articles, email sequences, and long documents. Understands context better than most tools.',
+    how: 'Give context first: "I make career content for freshers in Hinglish." Then ask for script. Always give your content style as context before asking.',
+    link: 'claude.ai', free: true
+  },
+  {
+    cat: 'content', icon: '🖼️', tool: 'Adobe Firefly', usecase: 'AI Image Generation',
+    desc: 'Generate commercially safe AI images for thumbnails, carousels and posts. Unlike Midjourney, Firefly images are safe to use for business.',
+    how: 'Go to firefly.adobe.com → Type description of image you want → Select style → Generate → Download. Use in Canva as background or illustration.',
+    link: 'firefly.adobe.com', free: true
+  },
+  {
+    cat: 'content', icon: '🎵', tool: 'Suno AI', usecase: 'Background Music',
+    desc: 'Generate royalty-free background music for your reels in seconds. Describe the mood and it creates a track.',
+    how: 'Go to suno.ai → Describe mood: "upbeat lo-fi for career advice video, no lyrics" → Generate → Download → Add to CapCut at 10-15% volume.',
+    link: 'suno.ai', free: true
+  },
+  {
+    cat: 'content', icon: '🗣️', tool: 'Captions AI', usecase: 'Auto Captions + Eye Contact',
+    desc: 'Adds animated captions automatically and even corrects your eye contact using AI so you always look at the camera.',
+    how: 'Upload video → AI transcribes → Choose caption style → Enable Eye Contact fix → Export. Captions alone increase watch time by 40%.',
+    link: 'captions.ai', free: false
+  },
+  {
+    cat: 'content', icon: '📱', tool: 'OpusClip', usecase: 'Long Video to Shorts',
+    desc: 'Upload a long video and AI automatically cuts it into 5-10 short clips, scores each for virality, and adds captions.',
+    how: 'Upload video → AI selects best moments → Review clips → Download top 3 → Post as separate Reels. Great for repurposing webinars or long content.',
+    link: 'opus.pro', free: true
+  },
+
+  // DOCS
+  {
+    cat: 'docs', icon: '📄', tool: 'Claude AI', usecase: 'Documents & HTML',
+    desc: 'Write reports, create HTML files, build Word documents, draft proposals — Claude handles complex structured documents better than any other AI.',
+    how: 'Tell Claude the format you need: "Create a Word document with..." or "Build an HTML page that...". Claude writes the complete file which you can download.',
+    link: 'claude.ai', free: true
+  },
+  {
+    cat: 'docs', icon: '📧', tool: 'ChatGPT', usecase: 'Emails & Communication',
+    desc: 'Best for writing professional emails, follow-ups, salary negotiations and LinkedIn messages. Fast and reliable for communication tasks.',
+    how: 'Paste context: role, recipient, goal. Then say "Write a professional email for this situation." Always review and add your personal touch before sending.',
+    link: 'chatgpt.com', free: true
+  },
+  {
+    cat: 'docs', icon: '📊', tool: 'Gamma AI', usecase: 'Presentations',
+    desc: 'Generate a complete presentation from a one-line prompt. AI creates slides, structure, visuals and content. Best alternative to spending 3 hours on PowerPoint.',
+    how: 'Go to gamma.app → "Create new" → Paste your topic → AI generates full deck → Edit slides → Export as PDF or PPT. Takes under 5 minutes.',
+    link: 'gamma.app', free: true
+  },
+  {
+    cat: 'docs', icon: '📝', tool: 'Notion AI', usecase: 'Notes & Documentation',
+    desc: 'AI built into Notion that summarises meeting notes, generates action items, writes SOPs and helps structure any document.',
+    how: 'In any Notion page → Press space or / → Select AI action. Try: "Summarise this", "Find action items", "Make this more concise". Best for work documentation.',
+    link: 'notion.so', free: false
+  },
+  {
+    cat: 'docs', icon: '✏️', tool: 'Grammarly', usecase: 'Writing Polish',
+    desc: 'Real-time grammar, tone and clarity suggestions for everything you write — emails, LinkedIn posts, reports. Works everywhere in the browser.',
+    how: 'Install Grammarly Chrome extension → It automatically checks everything you type → Click suggestions to accept. Use "Goals" to set tone: formal, confident, friendly.',
+    link: 'grammarly.com', free: true
+  },
+
+  // CODE
+  {
+    cat: 'code', icon: '💻', tool: 'Cursor AI', usecase: 'Full Website Building',
+    desc: 'AI-powered code editor. Describe what you want to build in plain English and Cursor writes, edits and debugs the code for you.',
+    how: 'Open Cursor → Press Cmd+K → Describe what you want: "Build a landing page for my Instagram bio link with these sections..." → AI writes complete code.',
+    link: 'cursor.sh', free: true
+  },
+  {
+    cat: 'code', icon: '🤖', tool: 'GitHub Copilot', usecase: 'Code Suggestions',
+    desc: 'AI that sits inside VS Code and autocompletes your code as you type. Like having a senior developer suggesting next steps in real time.',
+    how: 'Install GitHub Copilot extension in VS Code → Start typing → Accept suggestions with Tab → Use Ctrl+I for inline chat: "Fix this bug" or "Add error handling here".',
+    link: 'github.com/copilot', free: false
+  },
+  {
+    cat: 'code', icon: '🌐', tool: 'Bolt.new', usecase: 'App Prototyping',
+    desc: 'Build complete web apps by describing them in plain English. No coding knowledge needed. Great for prototyping ideas quickly.',
+    how: 'Go to bolt.new → Describe your app: "Build a habit tracker with a streak counter and daily check-in" → AI builds it live → Download or deploy directly.',
+    link: 'bolt.new', free: true
+  },
+  {
+    cat: 'code', icon: '🔧', tool: 'Netlify', usecase: 'Free Hosting',
+    desc: 'Host any HTML, CSS or JS file for free in 2 minutes. Drag and drop your file and get a shareable link instantly.',
+    how: 'Go to netlify.com → Drag your HTML file onto the dashboard → Get a live URL in 60 seconds → Share with anyone. No server or technical knowledge needed.',
+    link: 'netlify.com', free: true
+  },
+  {
+    cat: 'code', icon: '📋', tool: 'Claude AI', usecase: 'HTML Tools & Widgets',
+    desc: 'Build interactive HTML tools, calculators, quizzes and dashboards without any coding. Claude writes the complete file you can deploy instantly.',
+    how: 'Tell Claude: "Build an HTML page that does X. Make it mobile friendly and include Y feature." Download the file → Upload to Netlify → Share the link.',
+    link: 'claude.ai', free: true
+  },
+
+  // RESEARCH
+  {
+    cat: 'research', icon: '🔍', tool: 'Perplexity AI', usecase: 'Research & Fact Checking',
+    desc: 'AI search engine that gives sourced, up-to-date answers. Unlike ChatGPT, Perplexity searches the web in real time and cites every source.',
+    how: 'Go to perplexity.ai → Ask your research question → Review answer with sources → Click sources to verify → Use "Focus" mode for Academic or News search.',
+    link: 'perplexity.ai', free: true
+  },
+  {
+    cat: 'research', icon: '📰', tool: 'ChatGPT', usecase: 'Market Research',
+    desc: 'Great for understanding industries, company analysis, competitive research and building frameworks. Combine with Perplexity for best results.',
+    how: 'Prompt: "Give me a competitive analysis framework for [industry]. Then apply it to [company]." Always verify statistics with Perplexity before using in reports.',
+    link: 'chatgpt.com', free: true
+  },
+  {
+    cat: 'research', icon: '📚', tool: 'Consensus AI', usecase: 'Academic Research',
+    desc: 'Search through 200 million research papers using AI. Get evidence-based answers with citations. Perfect for data-backed content creation.',
+    how: 'Go to consensus.app → Ask a research question: "Does remote work improve productivity?" → AI finds relevant papers → Get consensus across studies with sources.',
+    link: 'consensus.app', free: true
+  },
+  {
+    cat: 'research', icon: '🗺️', tool: 'NotebookLM', usecase: 'Document Analysis',
+    desc: 'Upload any PDF, article or document and chat with it. Ask questions, get summaries, find connections. Made by Google, completely free.',
+    how: 'Go to notebooklm.google.com → Upload your documents → Ask questions: "What are the key insights?" or "Summarise the main argument" → Great for studying annual reports.',
+    link: 'notebooklm.google.com', free: true
+  },
+
+  // PRODUCTIVITY
+  {
+    cat: 'productivity', icon: '⚡', tool: 'ChatGPT', usecase: 'Daily Work Tasks',
+    desc: 'Your most versatile productivity tool. Meeting summaries, action items, data analysis, decision making — handles almost any text-based work task.',
+    how: 'Use these 3 daily prompts: 1) Paste meeting notes → "Extract action items with owners" 2) Paste job desc → "Is this a good fit for me?" 3) Paste data → "What does this tell me?"',
+    link: 'chatgpt.com', free: true
+  },
+  {
+    cat: 'productivity', icon: '📅', tool: 'Reclaim AI', usecase: 'Calendar Management',
+    desc: 'AI that automatically schedules your tasks, meetings and habits into your Google Calendar based on your priorities and energy levels.',
+    how: 'Connect Google Calendar → Add tasks with deadlines → Reclaim finds the best time slots automatically → Reschedules when meetings conflict. Set "habits" for deep work blocks.',
+    link: 'reclaim.ai', free: true
+  },
+  {
+    cat: 'productivity', icon: '📊', tool: 'Excel + Copilot', usecase: 'Data Analysis',
+    desc: 'Microsoft Copilot inside Excel lets you analyze data, create charts and write formulas in plain English. No formula knowledge needed.',
+    how: 'Open Excel → Select your data → Press Copilot button → Ask: "Show me a trend chart for last 6 months" or "What formula finds the top 10 values?" → Done.',
+    link: 'microsoft.com/excel', free: false
+  },
+  {
+    cat: 'productivity', icon: '🔄', tool: 'Make.com', usecase: 'Workflow Automation',
+    desc: 'Connect apps and automate repetitive tasks without coding. Like Zapier but with 10x more free operations. Used for automating forms, emails, spreadsheets.',
+    how: 'Create account → New scenario → Add trigger (e.g. Google Form submission) → Add action (e.g. Send Telegram message) → Turn on. Runs automatically forever.',
+    link: 'make.com', free: true
+  },
+  {
+    cat: 'productivity', icon: '🤝', tool: 'ManyChat', usecase: 'Instagram Automation',
+    desc: 'Automate Instagram DMs, comment replies and lead capture. When someone comments a keyword, ManyChat auto-sends them a message instantly.',
+    how: 'Connect Instagram → Create flow → Set trigger: "If comment contains GUIDE" → Action: "Send DM with resource link" → Activate. Works while you sleep.',
+    link: 'manychat.com', free: true
+  },
+  {
+    cat: 'productivity', icon: '📌', tool: 'Metricool', usecase: 'Social Media Analytics',
+    desc: 'Tracks all your Instagram analytics in one dashboard. Shows best posting times, top performing content and follower growth trends.',
+    how: 'Connect Instagram → Dashboard loads 30 days of data → Check "Best time to post" heatmap → Sort posts by saves to find top content → Use for weekly content decisions.',
+    link: 'metricool.com', free: true
+  },
+
+  // LEARNING
+  {
+    cat: 'learning', icon: '🎓', tool: 'ChatGPT', usecase: 'Personal Tutor',
+    desc: 'Best free personal tutor available. Explain any concept, quiz you on topics, simplify complex ideas, give examples relevant to your context.',
+    how: 'Prompt: "Explain [topic] like I am a smart 20-year-old with no background. Use an Indian example I can relate to. Then quiz me with 3 questions." Works for anything.',
+    link: 'chatgpt.com', free: true
+  },
+  {
+    cat: 'learning', icon: '🗣️', tool: 'Claude AI', usecase: 'Mock Interviews',
+    desc: 'Practice interviews, salary negotiations and difficult conversations. Claude stays in character and gives honest feedback on your answers.',
+    how: 'Prompt: "You are a strict interviewer for a marketing role. Ask me questions one at a time. After each answer, give me honest feedback on what was strong and what was weak."',
+    link: 'claude.ai', free: true
+  },
+  {
+    cat: 'learning', icon: '🧠', tool: 'Anki + AI', usecase: 'Flashcard Learning',
+    desc: 'Use ChatGPT to generate Anki flashcards from any topic, then use Anki\'s spaced repetition to memorise them permanently.',
+    how: 'ChatGPT prompt: "Create 20 Anki flashcards for [topic] in Question::Answer format." → Copy into Anki app → Study 10 minutes daily. Retention goes from 20% to 90%.',
+    link: 'ankiweb.net', free: true
+  },
+  {
+    cat: 'learning', icon: '📖', tool: 'NotebookLM', usecase: 'Book Summaries',
+    desc: 'Upload a book PDF or paste a long article and get instant summaries, key insights and Q&A. Like having a study partner who read everything.',
+    how: 'Upload book PDF to notebooklm.google.com → Ask: "What are the 5 most actionable insights?" or "How does chapter 3 apply to someone starting their first job?"',
+    link: 'notebooklm.google.com', free: true
+  },
+  {
+    cat: 'learning', icon: '🎯', tool: 'Perplexity AI', usecase: 'Skill Research',
+    desc: 'Research any skill or career path with up-to-date sourced information. Better than Google for understanding what a skill actually requires.',
+    how: 'Ask: "What does a data analyst actually do day to day in 2025? What skills do they need? What is the learning path from zero?" Get sourced, current answers.',
+    link: 'perplexity.ai', free: true
+  },
+];
+
+const prompts = [
+  { tool: 'ChatGPT', text: 'I have these meeting notes: [paste notes]. Extract all action items with owner names and deadlines. Format as a table.' },
+  { tool: 'Claude AI', text: 'Act as a strict interviewer for a [role] position at a [company type]. Ask me one question at a time and give feedback after each answer.' },
+  { tool: 'Perplexity', text: 'What are the most in-demand skills for [job role] in India in 2025? Include salary ranges and companies hiring.' },
+  { tool: 'ChatGPT', text: 'Here is a job description: [paste JD]. Score how well my profile fits (1-10) and tell me exactly what is missing.' },
+  { tool: 'Claude AI', text: 'Write a cold email to a recruiter at [company] for a [role] position. I have [your experience]. Make it under 100 words, specific and confident.' },
+  { tool: 'ChatGPT', text: 'I need to explain [complex topic] to my manager in 3 sentences. Make it clear, specific and focused on business impact.' },
+  { tool: 'Canva AI', text: 'Design a carousel post: Topic "[your topic]". Slide 1: bold hook. Slides 2-5: one insight per slide. Slide 6: CTA. Clean minimal style.' },
+  { tool: 'NotebookLM', text: 'Upload your PDF → Ask: What are the 5 most actionable insights from this? How do I apply insight 3 to my current job situation?' },
+];
+
+// Render tools
+function renderTools(data) {
+  const grid = document.getElementById('toolsGrid');
+  grid.innerHTML = '';
+  if (data.length === 0) {
+    document.getElementById('emptyState').classList.add('show');
+    return;
+  }
+  document.getElementById('emptyState').classList.remove('show');
+  data.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.cat = t.cat;
+    card.style.animationDelay = `${i * 0.04}s`;
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-icon icon-${t.cat}">${t.icon}</div>
+        <span class="card-badge badge-${t.cat}">${t.cat}</span>
+      </div>
+      <div class="card-tool">${t.tool}</div>
+      <div class="card-usecase">${t.usecase}</div>
+      <div class="card-desc">${t.desc}</div>
+      <div class="card-how">
+        <strong>How to use it</strong>
+        ${t.how}
+      </div>
+      <a class="card-link" href="https://${t.link}" target="_blank">
+        Open ${t.tool} →
+      </a>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// Render prompts
+function renderPrompts() {
+  const grid = document.getElementById('promptsGrid');
+  prompts.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'prompt-card';
+    card.innerHTML = `
+      <div class="prompt-tool">${p.tool}</div>
+      <div class="prompt-text">"${p.text}"</div>
+      <div class="prompt-copy" id="copy-${i}">📋 Click to copy</div>
+    `;
+    card.onclick = () => {
+      navigator.clipboard.writeText(p.text).then(() => {
+        const el = document.getElementById(`copy-${i}`);
+        el.textContent = '✅ Copied!';
+        el.classList.add('copied');
+        setTimeout(() => { el.textContent = '📋 Click to copy'; el.classList.remove('copied'); }, 2000);
+      });
+    };
+    grid.appendChild(card);
+  });
+}
+
+// Filter
+let activeFilter = 'all';
+let searchQuery = '';
+
+function applyFilters() {
+  const filtered = tools.filter(t => {
+    const matchCat = activeFilter === 'all' || t.cat === activeFilter;
+    const matchSearch = !searchQuery || 
+      t.tool.toLowerCase().includes(searchQuery) ||
+      t.usecase.toLowerCase().includes(searchQuery) ||
+      t.desc.toLowerCase().includes(searchQuery) ||
+      t.cat.toLowerCase().includes(searchQuery);
+    return matchCat && matchSearch;
+  });
+  renderTools(filtered);
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    applyFilters();
+  };
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.toLowerCase().trim();
+  applyFilters();
+});
+
+// Init
+renderTools(tools);
+renderPrompts();
+</script>
+</body>
+</html>
