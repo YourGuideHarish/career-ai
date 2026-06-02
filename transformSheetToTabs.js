@@ -31,15 +31,32 @@ function transformSheetToTabs(rows) {
     const tabId = row.Tab.toLowerCase().replace(/\s+/g, '-');
     
     if (!tabsMap.has(tabId)) {
-      tabsMap.set(tabId, {
-        id: tabId,
-        label: row.Tab,
-        icon: '📋', // Default icon, can be overridden in resources
-        heading: row.subtitle || `Explore ${row.Tab}`,
-        sub: row.description || '',
-        tools: [],
-      });
-    }
+
+const TAB_META = {
+Discover: {
+heading: "Where do you want to go?",
+sub: "Start here if you're figuring out your path."
+},
+Prepare: {
+heading: "What are you preparing for?",
+sub: "Pick the outcome you need - we'll get you ready."
+},
+Grow: {
+heading: "What do you want to get better at?",
+sub: "Long-term tools to level up your skills and career."
+}
+};
+
+tabsMap.set(tabId, {
+id: tabId,
+label: row.Tab,
+icon: '📋',
+heading: TAB_META[row.Tab]?.heading || `Explore ${row.Tab}`,
+sub: TAB_META[row.Tab]?.sub || '',
+tools: [],
+});
+
+}
 
     // Parse resources safely
     let resourcesData = {};

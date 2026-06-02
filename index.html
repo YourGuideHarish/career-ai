@@ -90,6 +90,9 @@ nav{
 
 .hero-search{max-width:500px;margin:0 auto 3rem;position:relative;}
 .hero-search input{
+  font-size:16px;
+min-width:0;
+
   width:100%;padding:0.95rem 1.1rem 0.95rem 2.9rem;
   background:var(--surface);border:1px solid var(--border-2,rgba(255,255,255,0.12));
   border-radius:100px;color:var(--text);
@@ -214,7 +217,14 @@ nav{
   display:flex;align-items:center;justify-content:center;font-size:1.1rem;
 }
 .tli-info{flex:1;min-width:0;}
-.tli-name{font-size:0.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tli-name{
+font-size:0.85rem;
+font-weight:600;
+color:var(--text);
+line-height:1.3;
+word-break:break-word;
+}
+
 .tli-cat{font-size:0.68rem;color:var(--text-3);margin-top:0.08rem;}
 .tli-badge{
   font-size:0.58rem;font-weight:700;letter-spacing:0.06em;
@@ -347,15 +357,140 @@ footer span{color:var(--accent);}
 
 /* responsive */
 @media(max-width:700px){
-  .split-panel{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
-  .split-left{border-right:none;border-bottom:1px solid var(--border);}
-  .tool-list{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:0.5rem;}
-  .tool-list-item{flex-direction:column;align-items:center;text-align:center;min-width:80px;gap:0.35rem;}
-  .tool-list-item.selected::before{display:none;}
-  .tli-cat{display:none;}
-  .nav-right .nav-link{display:none;}
-  .detail-pane{padding:1.4rem;}
+.split-panel{
+  display:block;
+  overflow:visible;
+  min-height:auto;
 }
+
+.split-right{
+  overflow:visible;
+}
+
+.detail-pane{
+  overflow:visible;
+}
+.hero-search input{
+padding-right:90px;
+font-size:14px;
+}
+
+.search-go{
+padding:0.5rem 0.75rem;
+font-size:0.72rem;
+}
+
+.split-panel{
+  display:block;
+}
+.split-left{
+  width:100%;
+}
+
+.split-right{
+  width:100%;
+  max-width:100%;
+}
+
+.detail-pane{
+  width:100%;
+  max-width:100%;
+}
+
+.split-left{
+border-right:none;
+border-bottom:1px solid var(--border);
+}
+
+.split-right{
+width:100%;
+overflow:visible;
+}
+
+.detail-pane{
+padding:1.2rem;
+width:100%;
+height:auto;
+overflow:visible;
+}
+
+.detail-title{
+font-size:1.2rem;
+line-height:1.3;
+word-break:break-word;
+}
+
+.detail-desc{
+font-size:0.85rem;
+line-height:1.6;
+white-space:normal;
+overflow:visible;
+word-break:break-word;
+}
+
+.detail-meta{
+gap:8px;
+}
+
+.meta-chip{
+font-size:0.68rem;
+}
+
+.detail-actions{
+flex-direction:column;
+width:100%;
+}
+
+.btn-try,
+.btn-embed-toggle,
+.btn-soon-big{
+width:100%;
+}
+
+.tool-list{
+display:flex;
+flex-direction:row;
+overflow-x:auto;
+gap:10px;
+padding:10px;
+scroll-snap-type:x mandatory;
+}
+
+.tool-list-item{
+flex-direction:column;
+min-width:140px;
+min-height:120px;
+flex-shrink:0;
+align-items:center;
+text-align:center;
+scroll-snap-align:start;
+}
+
+.tool-list-item.selected::before{
+display:none;
+}
+
+.tli-name{
+white-space:normal;
+overflow:visible;
+text-overflow:unset;
+font-size:0.78rem;
+line-height:1.3;
+}
+
+.tli-info{
+width:100%;
+}
+
+.tli-cat{
+display:none;
+}
+
+.nav-right .nav-link{
+display:none;
+}
+}
+
 </style>
 </head>
 <body>
@@ -371,7 +506,7 @@ const CONFIG = {
   by:        "by Harish",
   tagline:   "Your <span class='grad'>AI-powered</span> career platform",
   subline:   "Tools to help you discover the right path, prepare smarter, and grow faster.",
-  portfolio: "ADD_PORTFOLIO_LINK_HERE",
+  portfolio: "https://t.me/your_guide_harish",
   stats: [
     { num:"8+",   label:"AI Tools" },
     { num:"20K+", label:"Community" },
@@ -401,7 +536,7 @@ const CONFIG = {
     <div class="nav-right">
       <a class="nav-link" href="#tools">Tools</a>
       <a class="nav-link" href="#how">How it works</a>
-      <a class="nav-link" id="nav-port" target="_blank">Portfolio ↗</a>
+      <a class="nav-link" id="nav-port" target="_blank">Telegram ↗</a>
       <button class="btn-nav" id="login-btn" onclick="googleLogin()">
         Login with Google
       </button>
@@ -420,7 +555,7 @@ const CONFIG = {
     <p class="hero-sub" id="hero-sub"></p>
     <div class="hero-search">
       <span class="search-icon">🔍</span>
-      <input type="text" id="search-inp" placeholder="e.g. How do I prepare for a PM interview?">
+      <input type="text" id="search-inp" placeholder="e.g. How do I write Resume?">
       <button class="search-go" id="search-go">Ask CareerAI →</button>
     </div>
     <div id="ai-response" style="
@@ -492,7 +627,7 @@ const CONFIG = {
       <p>Free tools. Real results. No sign-up required.</p>
       <div class="cta-actions">
         <button class="btn-primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Explore all tools →</button>
-        <a class="btn-ghost" id="cta-port" target="_blank">See the portfolio ↗</a>
+        <a class="btn-ghost" id="cta-port" target="_blank">Join Telegram ↗</a>
       </div>
     </div>
   </div>
@@ -854,16 +989,16 @@ if(resourceBtn){
 
 resourceBtn.onclick = async () => {
 
-  if(!window.isLoggedIn){
+if(!window.isLoggedIn){
 
-    openAuthModal();
-    return;
+await window.googleLogin();
 
-  }
+}
 
-  window.open(r.link, '_blank');
+window.open(r.link, '_blank');
 
 };
+
 
 }
 
@@ -1215,7 +1350,7 @@ await signOut(auth);
 
 window.isLoggedIn = false;
 
-document.querySelector('.nav-right').innerHTML = ` <a class="nav-link" href="#tools">Tools</a> <a class="nav-link" href="#how">How it works</a> <a class="nav-link" id="nav-port" target="_blank">Portfolio ↗</a>
+document.querySelector('.nav-right').innerHTML = ` <a class="nav-link" href="#tools">Tools</a> <a class="nav-link" href="#how">How it works</a> <a class="nav-link" id="nav-port" target="_blank">Telegram ↗</a>
 
 <button class="btn-nav" id="login-btn" onclick="googleLogin()">
   Login with Google
