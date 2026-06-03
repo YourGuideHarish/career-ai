@@ -105,6 +105,10 @@ iconBg: row.iconBg || 'linear-gradient(135deg,#667EEA,#764BA2)',
     // New clean canonical structure
     title: row.title,
     subtitle: row.subtitle || row.title,
+    slug: (row.title || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, '-'),
     description: row.description || '',
     content_type: row.content_type || '',
     action_type: row.action_type || '',

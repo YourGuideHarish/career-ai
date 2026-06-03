@@ -847,8 +847,8 @@ if(visibleItems.length === 0){
   switcher.innerHTML = '';
   panels.innerHTML = '';
 
-  let activeTab  = C.tabs[0].id;
-
+  console.log("TABS", C.tabs);
+let activeTab  = C.tabs[0].id;
   C.tabs.forEach((tab, ti) => {
     // Button
     const btn = document.createElement('button');
@@ -1172,6 +1172,38 @@ window.open(tool.link,'_blank');
     });
   }
 
+const urlParams = new URLSearchParams(window.location.search);
+const toolSlug = urlParams.get('tool');
+
+if(toolSlug){
+
+  C.tabs.forEach(tab => {
+    const idx = tab.tools.findIndex(
+      t => t.slug === toolSlug
+    );
+
+    if(idx !== -1){
+
+      switchTab(tab.id);
+
+      setTimeout(() => {
+
+        if(tab._renderDetail){
+          tab._renderDetail(idx);
+        }
+
+        document.getElementById('tools')
+          ?.scrollIntoView({
+            behavior:'smooth'
+          });
+
+      }, 100);
+
+    }
+
+  });
+
+}
   // How it works
   const hg = document.getElementById('how-grid');
   C.howItWorks.forEach(h=>{
@@ -1184,8 +1216,6 @@ window.open(tool.link,'_blank');
   },{threshold:0.06});
   document.querySelectorAll('.reveal').forEach(el=> obs.observe(el));
 }
-
-initApp();
 
 </script>
 <script type="module">
