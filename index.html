@@ -716,7 +716,7 @@ const response = await fetch("/api/chat", {
   },
   body: JSON.stringify({
    model: "google/gemma-4-26b-a4b-it",
-   max_tokens: 300,
+   max_tokens: 80,
     messages: [
       {
         role: "system",
@@ -1205,6 +1205,14 @@ if(toolSlug){
 
 }
   // How it works
+  window.getToolLinks = () => {
+  return CONFIG.tabs.flatMap(tab =>
+    tab.tools.map(tool => ({
+      tool: tool.name,
+      link: `${window.location.origin}/?tool=${tool.slug}`
+    }))
+  );
+};
   const hg = document.getElementById('how-grid');
   C.howItWorks.forEach(h=>{
     hg.innerHTML += `<div class="how-card reveal"><div class="how-num">${h.num}</div><div style="font-size:1.7rem;margin-bottom:0.6rem;">${h.icon}</div><h3>${h.title}</h3><p>${h.desc}</p></div>`;
