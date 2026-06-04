@@ -715,8 +715,8 @@ const response = await fetch("/api/chat", {
     "X-Title": "CareerAI"
   },
   body: JSON.stringify({
-   model: "google/gemma-4-26b-a4b-it",
-   max_tokens: 80,
+   model: "meta-llama/llama-3.3-70b-instruct:free",
+   max_tokens: 180,
     messages: [
       {
         role: "system",
@@ -724,12 +724,14 @@ const response = await fetch("/api/chat", {
 
           Your job:
           - Help users with resumes, PM careers, analytics, AI skills, SQL, Excel, Python, interviews and career growth.
-          - Keep responses SHORT and practical.
-          - Max 120 words.
-          - Use bullet points when useful.
-          - If answer needs deep guidance, suggest a relevant tool from the platform.
-          - Sound like a smart mentor, not a generic chatbot.
-          - Never write long essays.`
+          - Keep responses practical and actionable.
+          - Maximum 150 words.
+          - Prefer bullets.
+          - Give direct recommendations.
+          - If a CareerAI tool can help, recommend it.
+          - Never write essays.
+          - Never say you don't know the platform.
+          - Sound like a mentor helping a student.`
           },
         ...chatHistory,
       {
