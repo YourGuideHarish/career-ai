@@ -689,6 +689,28 @@ const C = CONFIG;
   let chatHistory = [];
   async function doSearch(){
   const q = document.getElementById('search-inp').value.trim();
+  const matchedTools = CONFIG.tabs
+  .flatMap(tab => tab.tools)
+  .filter(tool => {
+    const text =
+      (tool.name + " " + tool.description)
+      .toLowerCase();
+
+    return q
+      .toLowerCase()
+      .split(" ")
+      .some(word => text.includes(word));
+  })
+  .slice(0, 3);
+
+const toolsContext = matchedTools
+  .map(tool => `
+Tool: ${tool.name}
+Description: ${tool.description}
+Link: ${window.location.origin}/?tool=${tool.slug}
+`)
+  .join("\n");
+  console.log("MATCHED TOOLS", matchedTools);
   if(!q) return;
 
   const responseBox = document.getElementById('ai-response');
@@ -707,14 +729,7 @@ chatHistory.push({
   role: "user",
   content: q
 });
-const toolsContext = CONFIG.tabs
-    .flatMap(tab => tab.tools)
-    .map(tool => `
-  Tool: ${tool.name}
-  Description: ${tool.description}
-  Link: ${window.location.origin}/?tool=${tool.slug}
-  `)
-    .join("\n"); 
+
 const response = await fetch("/api/chat", {
   method: "POST",
   headers: {
@@ -732,7 +747,9 @@ const response = await fetch("/api/chat", {
         role: "system",
          content: `You are CareerAI, an AI career assistant inside Harish's platform.
 
-          
+          Relevant CareerAI tools:
+
+          ${toolsContext}
 
           Your job:
           - Help users with resumes, PM careers, analytics, AI skills, SQL, Excel, Python, interviews and career growth.
