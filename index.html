@@ -758,7 +758,11 @@ const response = await fetch("/api/chat", {
           - Prefer bullets.
           - Give direct recommendations.
           - If a CareerAI tool can help, recommend it.
-          - When recommending a tool, include its exact link from the tool list above.
+          - When recommending a tool:
+          - Mention the tool name.
+          - Include the CareerAI tool link provided above.
+          - Never provide the external tool URL directly.
+          - Always direct users to the CareerAI tool page.
           - Never invent tools that are not in the tool list.
           - Never write essays.
           - Sound like a mentor helping a student.`
