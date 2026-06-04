@@ -723,8 +723,8 @@ const response = await fetch("/api/chat", {
     "X-Title": "CareerAI"
   },
   body: JSON.stringify({
-   model: "google/gemma-4-26b-a4b-it:free",
-   max_tokens: 180,
+   model: "google/gemma-4-26b-a4b-it",
+   max_tokens: 150,
    temperature: 0.4,
    
    messages: [
@@ -761,10 +761,17 @@ const data = await response.json();
 console.log(JSON.stringify(data, null, 2));
 
 const aiReply = data.choices?.[0]?.message?.content || "No response received.";
-chatHistory.push({
-  role: "assistant",
-  content: aiReply
-});
+if(data.error){
+  console.error(data.error);
+
+  responseBox.innerHTML += `
+    <div class="ai-msg">
+      CareerAI is currently busy. Please try again in a few minutes.
+    </div>
+  `;
+
+  return;
+}
 responseBox.style.display = 'block';
 
 responseBox.innerHTML += `
