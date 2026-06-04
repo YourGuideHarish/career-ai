@@ -707,6 +707,14 @@ chatHistory.push({
   role: "user",
   content: q
 });
+const toolsContext = CONFIG.tabs
+    .flatMap(tab => tab.tools)
+    .map(tool => `
+  Tool: ${tool.name}
+  Description: ${tool.description}
+  Link: ${window.location.origin}/?tool=${tool.slug}
+  `)
+    .join("\n"); 
 const response = await fetch("/api/chat", {
   method: "POST",
   headers: {
@@ -717,10 +725,16 @@ const response = await fetch("/api/chat", {
   body: JSON.stringify({
    model: "qwen/qwen3-next-80b-a3b-instruct:free",
    max_tokens: 180,
-    messages: [
+   temperature: 0.4,
+   
+   messages: [
       {
         role: "system",
          content: `You are CareerAI, an AI career assistant inside Harish's platform.
+
+          Available CareerAI tools:
+
+          ${toolsContext}
 
           Your job:
           - Help users with resumes, PM careers, analytics, AI skills, SQL, Excel, Python, interviews and career growth.
@@ -729,8 +743,9 @@ const response = await fetch("/api/chat", {
           - Prefer bullets.
           - Give direct recommendations.
           - If a CareerAI tool can help, recommend it.
+          - When recommending a tool, include its exact link from the tool list above.
+          - Never invent tools that are not in the tool list.
           - Never write essays.
-          - Never say you don't know the platform.
           - Sound like a mentor helping a student.`
           },
         ...chatHistory,
