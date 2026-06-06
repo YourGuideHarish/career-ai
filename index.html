@@ -809,8 +809,16 @@ responseBox.innerHTML += `
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\* /g, '<br>• ')
         .replace(
-          /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-          '<a href="$2" style="color:#8b5cf6;font-weight:600;text-decoration:none;">$1</a>'
+          /(https:\/\/career-ai-by-harish\.vercel\.app\/\?tool=([a-z0-9-]+))/g,
+          (match, url, slug) => {
+            const tool = CONFIG.tabs
+              .flatMap(tab => tab.tools)
+              .find(t => t.slug === slug);
+
+            return tool
+              ? `<a href="${url}" style="color:#8b5cf6;text-decoration:none;font-weight:600;">${tool.name}</a>`
+              : url;
+          }
         )
         .replace(/\n/g, '<br>')
       }
