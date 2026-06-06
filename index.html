@@ -490,6 +490,18 @@ display:none;
 display:none;
 }
 }
+.support-btn{
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:var(--text-2);
+  font:inherit;
+  padding:0;
+}
+
+.support-btn:hover{
+  color:#f472b6;
+}
 
 </style>
 </head>
@@ -534,8 +546,9 @@ const CONFIG = {
       <span style="font-size:0.7rem;color:var(--text-3);font-weight:400;font-family:'Inter',sans-serif;" id="nav-by"></span>
     </div>
     <div class="nav-right">
-      <a class="nav-link" href="#tools">Tools</a>
-      <a class="nav-link" href="#how">How it works</a>
+      <button class="nav-link support-btn" onclick="openSupportModal()">
+      ❤️ Support
+    </button>
       <a class="nav-link" id="nav-port" target="_blank">Telegram ↗</a>
       <button class="btn-nav" id="login-btn" onclick="googleLogin()">
         Login with Google
@@ -1292,14 +1305,14 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-getFirestore,
-doc,
-setDoc,
-increment
-
-
+  getFirestore,
+  doc,
+  setDoc,
+  increment,
+  getDoc,
+  collection,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyBU2Z2gULJGtcEIOhZRTKht5lKrCMuDUrE",
   authDomain: "career-ai-e0d5c.firebaseapp.com",
@@ -1311,6 +1324,36 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+async function trackSupportEvent(eventName) {
+  try {
+
+    // Existing counter
+    const ref = doc(db, "analytics", "support");
+
+    await setDoc(ref, {
+      [eventName]: increment(1),
+      lastEvent: eventName,
+      lastTimestamp: new Date(),
+      lastUser: auth.currentUser?.email || "anonymous"
+    }, { merge: true });
+    await addDoc(collection(db, "support_events"), {
+      event: eventName,
+      timestamp: new Date(),
+      user: auth.currentUser?.email || "anonymous"
+    });
+
+  } catch (e) {
+    console.error("Support tracking failed:", e);
+  }
+}
+window.openSupportModal = function() {
+  document.getElementById("support-modal").style.display = "flex";
+  trackSupportEvent("support_modal_opened");
+};
+
+window.closeSupportModal = function() {
+  document.getElementById("support-modal").style.display = "none";
+};
 
 const auth = getAuth(app);
 window.isLoggedIn = false;
@@ -1347,7 +1390,20 @@ sessionCount: increment(1)
 console.log("Firestore Save Success");
 
 window.isLoggedIn = true;
+
 document.querySelector('.nav-right').innerHTML = `
+
+<a class="nav-link support-btn" onclick="openSupportModal()">
+  ❤️ Support
+</a>
+
+<a class="nav-link" id="nav-port" target="_blank">
+  Telegram ↗
+</a>
+
+<div style="
+  position:relative;
+">
 
   <div style="
     position:relative;
@@ -1426,7 +1482,7 @@ document.querySelector('.nav-right').innerHTML = `
   </div>
 `;
 
-
+document.getElementById('nav-port').href = CONFIG.portfolio;
 console.log(user);
       
 
@@ -1454,8 +1510,148 @@ document.querySelector('.nav-right').innerHTML = ` <a class="nav-link" href="#to
 document.getElementById('nav-port').href = CONFIG.portfolio;
 
 }
+// Floating support banner
+window.closeSupportBanner = function() {
+  document.getElementById("support-banner").style.display = "none";
+};
 
+setTimeout(() => {
+  const banner = document.getElementById("support-banner");
+
+  if (banner) {
+    banner.style.display = "block";
+  }
+}, 60000); // 1 minute
 
 </script>
+<!-- Support Modal -->
+<div id="support-modal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+">
+
+  <div style="
+    max-width:420px;
+    width:100%;
+    background:#161B2E;
+    border-radius:24px;
+    padding:24px;
+    text-align:center;
+    color:white;
+    position:relative;
+  ">
+
+    <button onclick="closeSupportModal()" style="
+      position:absolute;
+      top:16px;
+      right:16px;
+      background:none;
+      border:none;
+      color:#aaa;
+      font-size:24px;
+      cursor:pointer;
+    ">
+      ×
+    </button>
+
+    <h2 style="margin-top:0;">❤️ Support CareerAI</h2>
+
+    <p style="color:#bbb;line-height:1.6;">
+      CareerAI is built to help students and freshers navigate their careers, completely free of cost.
+      If these tools have helped you, consider supporting the project. Even a small contribution helps cover AI costs and keeps CareerAI free for everyone.
+    </p>
+
+    <img
+      id="support-qr"
+      src="images/support-qr.png.jpeg"
+      alt="UPI QR"
+      style="
+        width:220px;
+        max-width:100%;
+        border-radius:16px;
+        margin:16px 0;
+        background:white;
+      "
+    >
+
+    <div style="margin-bottom:12px;">
+      <strong>UPI ID:</strong><br>
+      9716454604@pthdfc
+    </div>
+
+    <button onclick="copyUPI()" class="btn-nav">
+      📋 Copy UPI ID
+    </button>
+    <a
+      href="upi://pay?pa=9716454604@pthdfc&pn=CareerAI&tn=CAREERAI_DONATION"
+      onclick="trackSupportEvent('support_upi_clicked')"
+      class="btn-nav"
+      style="
+        display:inline-block;
+        margin-top:12px;
+        text-decoration:none; 
+        text-align:center;
+      "
+    >
+      💳 Pay via UPI App
+    </a>
+
+  </div>
+</div>
+<!-- Floating Support Banner -->
+<div id="support-banner" style="
+  display:none;
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  max-width:320px;
+  background:#161B2E;
+  color:white;
+  padding:18px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  z-index:9998;
+">
+
+  <div style="font-weight:600;margin-bottom:8px;">
+    ❤️ Enjoying CareerAI?
+  </div>
+
+  <div style="
+    font-size:14px;
+    color:#bdbdbd;
+    line-height:1.5;
+    margin-bottom:14px;
+  ">
+    Help keep these tools free for students and freshers.
+  </div>
+
+  <div style="display:flex;gap:10px;">
+
+    <button
+      class="btn-nav"
+      onclick="openSupportModal(); closeSupportBanner();"
+      style="flex:1;"
+    >
+      ❤️ Support
+    </button>
+
+    <button
+      class="btn-nav"
+      onclick="closeSupportBanner()"
+      style="flex:1;"
+    >
+      Maybe Later
+    </button>
+
+  </div>
+
+</div>
 </body>
 </html>
