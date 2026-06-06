@@ -808,9 +808,10 @@ responseBox.innerHTML += `
        ${aiReply
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\* /g, '<br>• ')
-        .replace(/Resume Builder/g, '<a href="https://chatgpt.com/g/g-6a080b44b36081918e6d887a53a6b6a3-ai-resume-builder" target="_blank" style="color:#8b5cf6;text-decoration:none;font-weight:600;">Resume Builder</a>')
-        .replace(/Interview Prep/g, '<a href="https://chatgpt.com/g/g-69db6512aa08819190bad7c88bbc83e5-prepai-interview-coach-by-harish" target="_blank" style="color:#8b5cf6;text-decoration:none;font-weight:600;">Interview Prep</a>')
-        .replace(/Stream Finder/g, '<a href="https://streamadvisor-harish.netlify.app/" target="_blank" style="color:#8b5cf6;text-decoration:none;font-weight:600;">Stream Finder</a>')
+        .replace(
+          /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+          '<a href="$2" style="color:#8b5cf6;font-weight:600;text-decoration:none;">$1</a>'
+        )
         .replace(/\n/g, '<br>')
       }
     </div>
