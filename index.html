@@ -357,6 +357,9 @@ footer span{color:var(--accent);}
 
 /* responsive */
 @media(max-width:700px){
+  #nav-by{
+    display:none;
+}
 .split-panel{
   display:block;
   overflow:visible;
@@ -447,6 +450,12 @@ width:100%;
 width:100%;
 }
 
+.btn-nav{
+    padding:0.4rem 0.8rem;
+    font-size:0.75rem;
+    border-radius:12px;
+}
+
 .tool-list{
 display:flex;
 flex-direction:row;
@@ -485,11 +494,12 @@ width:100%;
 .tli-cat{
 display:none;
 }
-
+}
 .nav-right .nav-link{
-display:none;
+    display:inline-flex;
+    font-size:0.72rem;
 }
-}
+
 .support-btn{
   background:none;
   border:none;
