@@ -707,10 +707,9 @@ const toolsContext = matchedTools
   .map(tool => `
 Tool: ${tool.name}
 Description: ${tool.description}
-Link: ${window.location.origin}/?tool=${tool.slug}
+CareerAI Link: ${window.location.origin}/?tool=${tool.slug}
 `)
   .join("\n");
-  console.log("MATCHED TOOLS", matchedTools);
   if(!q) return;
 
   const responseBox = document.getElementById('ai-response');
@@ -760,7 +759,11 @@ const response = await fetch("/api/chat", {
           - If a CareerAI tool can help, recommend it.
           - When recommending a tool:
           - Mention the tool name.
-          - Include the CareerAI tool link provided above.
+          - If you recommend a CareerAI tool:
+            - Use ONLY the exact CareerAI Link provided in the Relevant CareerAI tools section.
+            - NEVER generate or guess external URLs.
+            - NEVER mention direct tool websites.
+            - Always direct users to the CareerAI page using the provided CareerAI Link.
           - Never provide the external tool URL directly.
           - Always direct users to the CareerAI tool page.
           - Never invent tools that are not in the tool list.
