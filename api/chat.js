@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
 
-  if(req.method !== 'POST'){
+  if (req.method !== 'POST') {
     return res.status(405).json({
       error: 'Method not allowed'
     });
@@ -8,23 +8,61 @@ export default async function handler(req, res) {
 
   try {
 
+    const systemPrompt =
+      req.body.messages.find(m => m.role === "system")?.content || "";
+
+    const userMessages =
+      req.body.messages
+        .filter(m => m.role !== "system")
+        .map(m => `${m.role}: ${m.content}`)
+        .join("\n");
+
+    const prompt = `
+${systemPrompt}
+
+Conversation:
+
+${userMessages}
+`;
+
     const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(req.body)
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ]
+        })
       }
     );
 
     const data = await response.json();
 
-    return res.status(200).json(data);
+    const text =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "CareerAI is currently busy. Please try again later.";
 
-  } catch(error){
+    return res.status(200).json({
+      choices: [
+        {
+          message: {
+            content: text
+          }
+        }
+      ]
+    });
+
+  } catch (error) {
 
     return res.status(500).json({
       error: error.message
